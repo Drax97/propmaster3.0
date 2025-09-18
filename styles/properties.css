@@ -1,0 +1,321 @@
+/* Properties Page Mobile-First Styles */
+.properties-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.properties-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.properties-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+}
+
+/* Filters Section */
+.properties-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.mobile-search-filter-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.mobile-search-filter-row .search-input {
+  flex: 1;
+}
+
+.filter-toggle-button {
+  flex-shrink: 0;
+  min-width: 48px;
+  padding: 0 var(--spacing-sm);
+}
+
+.filters-container {
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.filters-container.filters-open {
+  display: flex;
+}
+
+.search-input,
+.desktop-search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.search-input input,
+.desktop-search-input input {
+  flex: 1;
+}
+
+.search-button {
+  flex-shrink: 0;
+  padding: var(--spacing-xs);
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-text-secondary);
+}
+
+/* Hide desktop search on mobile */
+.desktop-search-input {
+  display: none;
+}
+
+.filter-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Mobile Add Property Section - Always visible */
+.mobile-add-property-section {
+  margin: var(--spacing-sm) 0;
+}
+
+.mobile-add-property-section .add-property-link {
+  display: block;
+}
+
+.mobile-add-property-section .add-property-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Desktop Add Property Section - Inside filters */
+.desktop-add-property-section {
+  margin-top: var(--spacing-sm);
+  display: none;
+}
+
+.desktop-add-property-section .add-property-link {
+  display: block;
+}
+
+.desktop-add-property-section .add-property-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Legacy styles for backward compatibility */
+.add-property-link {
+  margin-top: var(--spacing-sm);
+}
+
+.add-property-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-icon {
+  margin-right: var(--spacing-sm);
+}
+
+/* Properties Grid */
+.properties-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+
+.property-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.property-card-header {
+  position: relative;
+}
+
+.property-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  min-height: 180px; /* Ensure minimum height for consistency */
+}
+
+.status-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+}
+
+.property-card-content {
+  padding: var(--spacing-sm);
+  min-height: 120px; /* Ensure consistent height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.property-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-xs);
+}
+
+.property-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-text-secondary);
+}
+
+.detail-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-primary);
+}
+
+.property-card-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.no-properties-message {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--color-text-secondary);
+}
+
+/* Status Badge Colors */
+.status-badge.status-green {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-secondary);
+}
+
+.status-badge.status-blue {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--color-primary);
+}
+
+.status-badge.status-orange {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: orange;
+}
+
+.status-badge.status-gray {
+  background-color: rgba(107, 114, 128, 0.1);
+  color: var(--color-text-secondary);
+}
+
+/* Desktop Enhancements */
+@media (min-width: 768px) {
+  .properties-main {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+  }
+
+  .properties-filters {
+    position: sticky;
+    top: var(--spacing-md);
+    align-self: start;
+  }
+
+  .mobile-search-filter-row {
+    display: none;
+  }
+
+  .mobile-add-property-section {
+    display: none;
+  }
+
+  .desktop-add-property-section {
+    display: block;
+  }
+
+  .filters-container {
+    display: flex;
+  }
+
+  .desktop-search-input {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .properties-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-inputs {
+    flex-direction: row;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .properties-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Accessibility and Interaction */
+.properties-page a, 
+.properties-page button {
+  transition: all 0.2s ease;
+}
+
+.properties-page a:hover, 
+.properties-page button:hover {
+  opacity: 0.9;
+}
+
+.properties-page a:focus, 
+.properties-page button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
