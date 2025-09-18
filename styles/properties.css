@@ -147,9 +147,25 @@
 .properties-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
 }
 
+/* Mobile Property Cards */
+.property-card-mobile {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.property-card-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Desktop Property Cards (unchanged) */
 .property-card {
   display: flex;
   flex-direction: column;
@@ -287,8 +303,28 @@
     margin-bottom: var(--spacing-sm);
   }
 
+  /* Desktop Grid Layout - maintain existing desktop cards */
   .properties-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  /* Desktop property cards use original styling */
+  .property-card-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .property-card-desktop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .filter-inputs {

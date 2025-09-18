@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import UserClientSelector from '@/components/ui/user-client-selector'
 import { 
   ArrowLeft, DollarSign, Save, User, Calendar, 
   Receipt, FileText, AlertCircle, Building2 
@@ -25,6 +26,7 @@ export default function NewFinanceRecordPage() {
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     property_id: '',
+    client_id: '',
     client_name: '',
     amount: '',
     payment_type: 'registration',
@@ -95,6 +97,11 @@ export default function NewFinanceRecordPage() {
       return
     }
     
+    if (!formData.client_id.trim()) {
+      setError('Please select a client')
+      return
+    }
+    
     if (!formData.client_name.trim()) {
       setError('Client name is required')
       return
@@ -113,7 +120,8 @@ export default function NewFinanceRecordPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          amount: parseFloat(formData.amount)
+          amount: parseFloat(formData.amount),
+          client_id: formData.client_id.trim()
         })
       })
 
@@ -237,16 +245,15 @@ export default function NewFinanceRecordPage() {
                     </Select>
                   </div>
                   
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
-                      <User className="h-4 w-4 mr-1" />
-                      Client Name *
-                    </label>
-                    <Input
-                      placeholder="e.g., John Doe"
-                      value={formData.client_name}
-                      onChange={(e) => handleInputChange('client_name', e.target.value)}
+                  <div className="md:col-span-2">
+                    <UserClientSelector
+                      value={formData.client_id}
+                      onValueChange={(clientId) => handleInputChange('client_id', clientId)}
+                      clientName={formData.client_name}
+                      onClientNameChange={(name) => handleInputChange('client_name', name)}
+                      placeholder="Select a client from your users"
                       required
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -371,17 +378,14 @@ export default function NewFinanceRecordPage() {
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
                     <FileText className="h-4 w-4 mr-1" />
-                    Notes <span className="text-xs text-gray-500">(Optional - may not be available in current schema)</span>
+                    Notes <span className="text-xs text-gray-500">(Optional)</span>
                   </label>
                   <Textarea
-                    placeholder="Additional notes about this payment... (Note: This field may not be saved if schema needs updating)"
+                    placeholder="Additional notes about this payment..."
                     value={formData.notes}
                     onChange={(e) => handleInputChange('notes', e.target.value)}
                     rows={3}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    If you get a schema error, try creating the record without notes first.
-                  </p>
                 </div>
               </CardContent>
             </Card>

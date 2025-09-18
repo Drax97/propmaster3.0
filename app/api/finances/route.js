@@ -169,7 +169,8 @@ export async function POST(request) {
     const body = await request.json()
     const { 
       property_id, 
-      client_name, 
+      client_name,
+      client_id, 
       amount, 
       payment_type, 
       due_date, 
@@ -190,6 +191,7 @@ export async function POST(request) {
     const financeData = {
       property_id,
       client_name: client_name.trim(),
+      client_id: client_id?.trim() || null,
       amount: parseFloat(amount),
       payment_type,
       due_date: due_date || null,

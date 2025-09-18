@@ -4,7 +4,8 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    serverExternalPackages: ['mongodb'],
+    // serverExternalPackages has been replaced with serverComponentsExternalPackages
+    serverComponentsExternalPackages: ['mongodb'],
   },
   webpack(config, { dev, isServer }) {
     if (dev) {

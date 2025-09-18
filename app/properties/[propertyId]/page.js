@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,7 +14,7 @@ import LazyImage from '@/components/LazyImage'
 import LoadingSpinner from '@/components/LoadingSpinner'
 
 export default function PropertyDetailPage({ params }) {
-  const { propertyId } = params
+  const { propertyId } = use(params)
   const router = useRouter()
   const [property, setProperty] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -115,8 +115,38 @@ export default function PropertyDetailPage({ params }) {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          {/* Mobile Header Layout */}
+          <div className="flex flex-col space-y-3 sm:hidden">
+            <div className="flex items-center justify-between">
+              <Link href="/properties">
+                <Button variant="outline" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-1" />
+                  <span className="hidden xs:inline">Back to Properties</span>
+                  <span className="xs:hidden">Back</span>
+                </Button>
+              </Link>
+              <div className="flex items-center space-x-2">
+                <Building2 className="h-5 w-5 text-blue-600" />
+                <h1 className="text-lg font-bold text-gray-900">Property Details</h1>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm" className="flex-1">
+                <Share className="h-4 w-4 mr-1" />
+                <span>Share</span>
+              </Button>
+              <Link href={`/properties/${propertyId}/edit`} className="flex-1">
+                <Button size="sm" className="w-full">
+                  <Edit className="h-4 w-4 mr-1" />
+                  <span>Edit</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Desktop Header Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link href="/properties">
                 <Button variant="outline" size="sm">
@@ -146,163 +176,199 @@ export default function PropertyDetailPage({ params }) {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto">
           {/* Property Header */}
-          <div className="mb-8">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{property.name}</h1>
-                <div className="flex items-center space-x-4 text-gray-600">
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="h-4 w-4" />
-                    <span>{property.location || 'Location not specified'}</span>
-                  </div>
+          <div className="mb-6 sm:mb-8">
+            {/* Mobile Property Header */}
+            <div className="sm:hidden">
+              <h1 className="text-2xl font-bold text-gray-900 mb-3">{property.name}</h1>
+              <div className="flex flex-col space-y-3 mb-4">
+                <div className="flex items-center space-x-2 text-gray-600">
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm">{property.location || 'Location not specified'}</span>
+                </div>
+                <div className="flex items-center justify-between">
                   <Badge className={getStatusBadgeColor(property.status)}>
                     {property.status?.toUpperCase()}
                   </Badge>
+                  <div className="text-2xl font-bold text-green-600">
+                    {formatCurrency(property.price)}
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-green-600">
-                  {formatCurrency(property.price)}
+            </div>
+
+            {/* Desktop Property Header */}
+            <div className="hidden sm:block">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{property.name}</h1>
+                  <div className="flex items-center space-x-4 text-gray-600">
+                    <div className="flex items-center space-x-1">
+                      <MapPin className="h-4 w-4" />
+                      <span>{property.location || 'Location not specified'}</span>
+                    </div>
+                    <Badge className={getStatusBadgeColor(property.status)}>
+                      {property.status?.toUpperCase()}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-green-600">
+                    {formatCurrency(property.price)}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Cover Image */}
-              <Card>
-                <CardContent className="p-0">
-                  <LazyImage
-                    src={property.cover_image}
-                    alt={property.name}
-                    className="rounded-lg"
-                    aspectRatio="aspect-video"
-                    fallbackIcon={ImageIcon}
-                  />
-                </CardContent>
-              </Card>
+          {/* Photos and Documents Section - Top of Page */}
+          <div className="mb-6 lg:mb-8">
+            {/* Cover Image */}
+            <Card className="mb-6">
+              <CardContent className="p-0">
+                <LazyImage
+                  src={property.cover_image}
+                  alt={property.name}
+                  className="rounded-lg"
+                  aspectRatio="aspect-video"
+                  fallbackIcon={ImageIcon}
+                />
+              </CardContent>
+            </Card>
 
-              {/* Description */}
-              {property.description && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <FileText className="h-5 w-5" />
-                      <span>Description</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 leading-relaxed">{property.description}</p>
-                  </CardContent>
-                </Card>
-              )}
-
+            {/* Additional Images and Documents Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Additional Images */}
               {parseArrayField(property.images).length > 0 && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center space-x-2 text-lg">
                       <ImageIcon className="h-5 w-5" />
                       <span>Additional Images</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {parseArrayField(property.images).map((image, index) => (
+                  <CardContent className="pt-0">
+                    <div className="grid grid-cols-2 gap-3">
+                      {parseArrayField(property.images).slice(0, 4).map((image, index) => (
                         <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                           <img
                             src={image}
                             alt={`${property.name} - Image ${index + 1}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                           />
                         </div>
+                      ))}
+                      {parseArrayField(property.images).length > 4 && (
+                        <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
+                          <span className="text-sm font-medium">+{parseArrayField(property.images).length - 4} more</span>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Documents Section */}
+              {parseArrayField(property.documents).length > 0 && (
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center space-x-2 text-lg">
+                      <FileText className="h-5 w-5" />
+                      <span>Documents</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      {parseArrayField(property.documents).map((doc, index) => (
+                        <a
+                          key={index}
+                          href={doc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <FileText className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">Document {index + 1}</span>
+                          <ExternalLink className="h-3 w-3 text-gray-400 ml-auto" />
+                        </a>
                       ))}
                     </div>
                   </CardContent>
                 </Card>
               )}
             </div>
+          </div>
+
+          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+              {/* Description */}
+              {property.description && (
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center space-x-2 text-lg">
+                      <FileText className="h-5 w-5" />
+                      <span>Description</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{property.description}</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
 
             {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Property Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Property Information</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Price</label>
-                    <div className="text-lg font-bold text-green-600">
-                      {formatCurrency(property.price)}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Status</label>
-                    <div>
-                      <Badge className={getStatusBadgeColor(property.status)}>
-                        {property.status?.toUpperCase()}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Location</label>
-                    <div className="text-gray-900">{property.location || 'Not specified'}</div>
-                  </div>
-                  
-                  {property.maps_link && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Map Location</label>
-                      <div>
-                        <a 
-                          href={property.maps_link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 flex items-center space-x-1"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                          <span>View on Maps</span>
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+            <div className="space-y-4 sm:space-y-6 order-first lg:order-last">
+              {/* Additional Information */}
+              {property.maps_link && (
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Map Location</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <a 
+                      href={property.maps_link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 text-sm"
+                    >
+                      <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                      <span>View on Maps</span>
+                    </a>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Metadata */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Property Metadata</CardTitle>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Property Metadata</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 pt-0">
                   <div>
                     <label className="text-sm font-medium text-gray-600">Created By</label>
-                    <div className="flex items-center space-x-2">
-                      <User className="h-4 w-4 text-gray-400" />
-                      <span>{property.users?.name || 'Unknown'}</span>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-900">{property.users?.name || 'Unknown'}</span>
                     </div>
                   </div>
                   
                   <div>
                     <label className="text-sm font-medium text-gray-600">Created Date</label>
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span>{formatDate(property.created_at)}</span>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Calendar className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-900">{formatDate(property.created_at)}</span>
                     </div>
                   </div>
                   
                   <div>
                     <label className="text-sm font-medium text-gray-600">Last Updated</label>
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span>{formatDate(property.updated_at)}</span>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Calendar className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-900">{formatDate(property.updated_at)}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -311,12 +377,12 @@ export default function PropertyDetailPage({ params }) {
               {/* Internal Notes */}
               {property.notes && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Internal Notes</CardTitle>
-                    <CardDescription>Private notes (not visible to clients)</CardDescription>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Internal Notes</CardTitle>
+                    <CardDescription className="text-sm">Private notes (not visible to clients)</CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 text-sm">{property.notes}</p>
+                  <CardContent className="pt-0">
+                    <p className="text-gray-700 text-sm leading-relaxed">{property.notes}</p>
                   </CardContent>
                 </Card>
               )}

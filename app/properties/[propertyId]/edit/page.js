@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
@@ -16,7 +16,7 @@ import DocumentUpload from '@/components/DocumentUpload'
 import Link from 'next/link'
 
 export default function EditPropertyPage({ params }) {
-  const { propertyId } = params
+  const { propertyId } = use(params)
   const { data: session, status } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)

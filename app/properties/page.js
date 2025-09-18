@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { 
   Building2, ArrowLeft, Plus, Search, Filter, MapPin, DollarSign, 
-  Eye, Edit, Calendar, User, X
+  Eye, Edit, Calendar, User, X, Share, FileText, ChevronDown, ChevronUp
 } from 'lucide-react'
 
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -35,6 +35,7 @@ export default function PropertiesPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [locationFilter, setLocationFilter] = useState('')
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const [expandedCards, setExpandedCards] = useState(new Set())
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -126,6 +127,33 @@ export default function PropertiesPage() {
 
   const userRole = getUserRole(session?.user)
   const canAddProperty = canManageProperties(userRole)
+
+  // Toggle card expansion for metadata
+  const toggleCardExpansion = useCallback((propertyId) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(propertyId)) {
+        newSet.delete(propertyId)
+      } else {
+        newSet.add(propertyId)
+      }
+      return newSet
+    })
+  }, [])
+
+  // Helper function to safely parse images
+  const parseImages = useCallback((images) => {
+    if (!images) return []
+    if (Array.isArray(images)) return images
+    if (typeof images === 'string') {
+      try {
+        return JSON.parse(images)
+      } catch {
+        return []
+      }
+    }
+    return []
+  }, [])
 
   if (status === 'loading' || loading) {
     return (
@@ -295,58 +323,190 @@ export default function PropertiesPage() {
               <p>No properties found. Try adjusting your filters.</p>
             </div>
           ) : (
-            properties.map((property) => (
-              <div 
-                key={property.id} 
-                className="property-card"
-                data-testid="property-card"
-              >
-                <div className="property-card-header">
-                  <LazyImage 
-                    src={property.cover_image || property.imageUrl || '/placeholder-property.jpg'} 
-                    alt={`Property at ${property.name || property.address || 'Unnamed Location'}`}
-                    className="property-image"
-                  />
-                  <Badge 
-                    variant="outline" 
-                    className={`status-badge status-${getStatusBadgeColor(property.status)}`}
-                  >
-                    {property.status}
-                  </Badge>
-                </div>
-
-                <div className="property-card-content">
-                  <h3 className="property-title">{property.name || property.address || 'Unnamed Property'}</h3>
-                  <div className="property-details">
-                    <div className="detail-item">
-                      <MapPin className="detail-icon" />
-                      <span>{property.location || 'Location not specified'}</span>
+            properties.map((property) => {
+              const propertyImages = parseImages(property.images)
+              const isExpanded = expandedCards.has(property.id)
+              
+              return (
+                <div 
+                  key={property.id} 
+                  className="property-card-mobile md:property-card-desktop"
+                  data-testid="property-card"
+                >
+                  {/* Mobile Card Layout */}
+                  <div className="md:hidden">
+                    {/* Card Header with Logo Button */}
+                    <div className="flex items-center justify-between p-4 pb-2">
+                      <div className="flex items-center space-x-2">
+                        <Building2 className="h-5 w-5 text-blue-600" />
+                        <span className="font-medium text-gray-900 text-sm">Property</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {canAddProperty && (
+                          <Link href={`/properties/${property.id}/edit`}>
+                            <Button variant="ghost" size="sm" className="h-8 px-2">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        )}
+                        <Button variant="ghost" size="sm" className="h-8 px-2">
+                          <Share className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="detail-item">
-                      <DollarSign className="detail-icon" />
-                      <span>Price: ${property.price || property.rent || 0}</span>
+
+                    {/* Property Photos */}
+                    <div className="px-4 pb-3">
+                      {property.cover_image ? (
+                        <Link href={`/properties/${property.id}`}>
+                          <div className="relative rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-95 transition-opacity">
+                            <LazyImage 
+                              src={property.cover_image} 
+                              alt={`${property.name || 'Property'}`}
+                              className="w-full h-48 object-cover"
+                            />
+                            {/* Status Badge on Image */}
+                            <Badge 
+                              variant="secondary" 
+                              className={`absolute top-2 right-2 text-xs font-medium ${
+                                property.status === 'available' ? 'bg-green-100 text-green-800' :
+                                property.status === 'occupied' ? 'bg-blue-100 text-blue-800' :
+                                property.status === 'maintenance' ? 'bg-orange-100 text-orange-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}
+                            >
+                              {property.status?.toUpperCase() || 'UNKNOWN'}
+                            </Badge>
+                            
+                            {/* Additional Images Indicator */}
+                            {propertyImages.length > 0 && (
+                              <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md">
+                                +{propertyImages.length} more
+                              </div>
+                            )}
+                          </div>
+                        </Link>
+                      ) : (
+                        <Link href={`/properties/${property.id}`}>
+                          <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:opacity-95 transition-opacity">
+                            <Building2 className="h-12 w-12 text-gray-400" />
+                          </div>
+                        </Link>
+                      )}
+                    </div>
+
+
+                    {/* Basic Information */}
+                    <div className="px-4 pb-3 space-y-2">
+                      <h3 className="font-semibold text-gray-900 text-lg leading-tight">
+                        {property.name || 'Unnamed Property'}
+                      </h3>
+                      
+                      {/* Price */}
+                      <div className="flex items-center space-x-1">
+                        <span className="font-bold text-green-600 text-lg">
+                          ₹{(property.price || 0).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+                      
+                      {/* Location */}
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <MapPin className="h-4 w-4 flex-shrink-0" />
+                        <span className="text-sm truncate">{property.location || 'Location not specified'}</span>
+                      </div>
+                    </div>
+
+                    {/* Collapsible Metadata Section */}
+                    <div className="border-t border-gray-100">
+                      <button
+                        onClick={() => toggleCardExpansion(property.id)}
+                        className="w-full px-4 py-3 flex items-center justify-between text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        <span>Property Details</span>
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </button>
+                      
+                      {isExpanded && (
+                        <div className="px-4 pb-4 space-y-2 text-sm text-gray-600 border-t border-gray-100 bg-gray-50">
+                          {property.created_at && (
+                            <div className="flex items-center space-x-2">
+                              <Calendar className="h-3 w-3" />
+                              <span>Added: {new Date(property.created_at).toLocaleDateString()}</span>
+                            </div>
+                          )}
+                          {property.users?.name && (
+                            <div className="flex items-center space-x-2">
+                              <User className="h-3 w-3" />
+                              <span>By: {property.users.name}</span>
+                            </div>
+                          )}
+                          <div className="pt-2">
+                            <Link href={`/properties/${property.id}`}>
+                              <Button variant="outline" size="sm" className="w-full">
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Full Details
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Desktop Card Layout (unchanged) */}
+                  <div className="hidden md:block">
+                    <div className="property-card-header">
+                      <LazyImage 
+                        src={property.cover_image || property.imageUrl || '/placeholder-property.jpg'} 
+                        alt={`Property at ${property.name || property.address || 'Unnamed Location'}`}
+                        className="property-image"
+                      />
+                      <Badge 
+                        variant="outline" 
+                        className={`status-badge status-${getStatusBadgeColor(property.status)}`}
+                      >
+                        {property.status}
+                      </Badge>
+                    </div>
+
+                    <div className="property-card-content">
+                      <h3 className="property-title">{property.name || property.address || 'Unnamed Property'}</h3>
+                      <div className="property-details">
+                        <div className="detail-item">
+                          <MapPin className="detail-icon" />
+                          <span>{property.location || 'Location not specified'}</span>
+                        </div>
+                        <div className="detail-item">
+                          <DollarSign className="detail-icon" />
+                          <span>Price: ₹{(property.price || property.rent || 0).toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="property-card-actions">
+                      <Link href={`/properties/${property.id}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="button-icon" />
+                          View Details
+                        </Button>
+                      </Link>
+                      {canAddProperty && (
+                        <Link href={`/properties/${property.id}/edit`}>
+                          <Button variant="outline" size="sm">
+                            <Edit className="button-icon" />
+                            Edit
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
-
-                <div className="property-card-actions">
-                  <Link href={`/properties/${property.id}`}>
-                    <Button variant="outline" size="sm">
-                      <Eye className="button-icon" />
-                      View Details
-                    </Button>
-                  </Link>
-                  {canAddProperty && (
-                    <Link href={`/properties/${property.id}/edit`}>
-                      <Button variant="outline" size="sm">
-                        <Edit className="button-icon" />
-                        Edit
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ))
+              )
+            })
           )}
         </section>
       </main>
