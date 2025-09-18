@@ -54,15 +54,18 @@ export default function ViewerPropertiesCard() {
 
   if (loading) {
     return (
-      <Card className="viewer-properties-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
-            Properties Available
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Building2 className="h-5 w-5 text-primary" />
+            Properties Available for Sale
           </CardTitle>
+          <CardDescription className="text-sm">
+            Browse available properties in our portfolio
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center py-8">
+          <div className="flex flex-col items-center justify-center py-12">
             <LoadingSpinner size="md" text="Loading properties..." />
           </div>
         </CardContent>
@@ -72,21 +75,23 @@ export default function ViewerPropertiesCard() {
 
   if (error) {
     return (
-      <Card className="viewer-properties-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
-            Properties Available
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Building2 className="h-5 w-5 text-primary" />
+            Properties Available for Sale
           </CardTitle>
+          <CardDescription className="text-sm">
+            Browse available properties in our portfolio
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">{error}</p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-muted-foreground mb-4">{error}</p>
             <Button 
               variant="outline" 
-              size="sm" 
               onClick={fetchPropertiesData}
-              className="mt-4"
+              className="hover:shadow-md transition-all duration-200"
             >
               Try Again
             </Button>
@@ -97,93 +102,109 @@ export default function ViewerPropertiesCard() {
   }
 
   return (
-    <Card className="viewer-properties-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-primary" />
-          Properties Available for Sale
-        </CardTitle>
-        <CardDescription>
-          Browse available properties in our portfolio
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Stats Overview */}
-        <div className="properties-stats-grid">
-          <div className="stat-item">
-            <div className="stat-value">{stats.totalProperties}</div>
-            <div className="stat-label">Total Properties</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-value">
-              ₹{stats.cheapestPrice > 0 ? stats.cheapestPrice.toLocaleString() : '0'}
-            </div>
-            <div className="stat-label">Starting From</div>
-          </div>
-        </div>
-
-        {/* Featured Properties Preview */}
-        {properties.length > 0 ? (
-          <div className="space-y-4">
-            <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
-              Featured Properties
-            </h4>
-            <div className="properties-preview-list">
-              {properties.map((property) => (
-                <div key={property.id} className="property-preview-item">
-                  <div className="property-preview-content">
-                    <div className="property-preview-header">
-                      <h5 className="property-preview-title">{property.name}</h5>
-                      <Badge 
-                        variant="secondary" 
-                        className="property-status-badge"
-                      >
-                        {property.status}
-                      </Badge>
-                    </div>
-                    <div className="property-preview-details">
-                      {property.location && (
-                        <div className="property-detail">
-                          <MapPin className="property-detail-icon" />
-                          <span className="property-detail-text">{property.location}</span>
-                        </div>
-                      )}
-                      {property.price && (
-                        <div className="property-detail">
-                          <DollarSign className="property-detail-icon" />
-                          <span className="property-detail-text">
-                            ₹{property.price.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <Link href={`/properties/${property.id}`}>
-                    <Button variant="ghost" size="sm" className="property-preview-action">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
+    <div className="space-y-6">
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Building2 className="h-5 w-5 text-primary" />
+            Properties Available for Sale
+          </CardTitle>
+          <CardDescription className="text-sm">
+            Browse available properties in our portfolio
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
+            <Card className="p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:shadow-md transition-all duration-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl sm:text-2xl font-bold text-blue-600">{stats.totalProperties}</p>
+                  <p className="text-xs text-blue-600/70 font-medium">Total Properties</p>
                 </div>
-              ))}
-            </div>
+                <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+              </div>
+            </Card>
+            <Card className="p-3 sm:p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-md transition-all duration-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl sm:text-2xl font-bold text-green-600">
+                    ₹{stats.cheapestPrice > 0 ? stats.cheapestPrice.toLocaleString() : '0'}
+                  </p>
+                  <p className="text-xs text-green-600/70 font-medium">Starting From</p>
+                </div>
+                <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
+              </div>
+            </Card>
           </div>
-        ) : (
-          <div className="empty-state">
-            <Building2 className="empty-state-icon" />
-            <p className="empty-state-text">No properties available at the moment</p>
-          </div>
-        )}
 
-        {/* Action Button */}
-        <div className="card-actions">
-          <Link href="/properties" className="w-full">
-            <Button className="w-full">
-              <Building2 className="mr-2 h-4 w-4" />
-              View All Properties
-            </Button>
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+          {/* Featured Properties Preview */}
+          {properties.length > 0 ? (
+            <div className="space-y-4">
+              <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                Featured Properties
+              </h4>
+              <div className="space-y-3">
+                {properties.map((property) => (
+                  <Card key={property.id} className="group hover:shadow-md transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between mb-2 gap-2">
+                            <h5 className="font-medium text-sm leading-tight">{property.name}</h5>
+                            <Badge 
+                              variant="secondary" 
+                              className="text-xs flex-shrink-0"
+                            >
+                              {property.status}
+                            </Badge>
+                          </div>
+                          <div className="space-y-1">
+                            {property.location && (
+                              <div className="flex items-center gap-1.5">
+                                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="text-xs text-muted-foreground truncate">{property.location}</span>
+                              </div>
+                            )}
+                            {property.price && (
+                              <div className="flex items-center gap-1.5">
+                                <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="text-sm font-semibold text-primary">
+                                  ₹{property.price.toLocaleString()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <Link href={`/properties/${property.id}`}>
+                          <Button variant="ghost" size="sm" className="ml-2 p-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Building2 className="h-12 w-12 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">No properties available at the moment</p>
+            </div>
+          )}
+
+          {/* Action Button */}
+          <div className="pt-4 border-t">
+            <Link href="/properties" className="block">
+              <Button className="w-full h-12 text-base font-medium bg-primary hover:bg-primary/90 transition-all duration-200 hover:shadow-md">
+                <Building2 className="mr-2 h-5 w-5" />
+                View All Properties
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

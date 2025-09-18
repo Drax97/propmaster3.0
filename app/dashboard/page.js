@@ -131,7 +131,7 @@ export default function Dashboard() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="dashboard-loading">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
       </div>
     );
@@ -147,18 +147,18 @@ export default function Dashboard() {
   const isViewerUser = userRole === ROLES.VIEWER;
 
   return (
-    <div className="dashboard">
+    <div className="min-h-screen bg-background">
       <Header 
         session={session} 
         isMasterUser={isMasterUser} 
       />
 
-      <main className="dashboard-main">
-        <section className="welcome-section">
-          <h2 className="welcome-title">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-4xl">
+        <section className="space-y-2">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             Welcome back, {session.user.name}!
-          </h2>
-          <p className="welcome-subtitle">
+          </h1>
+          <p className="text-muted-foreground md:text-lg">
             {isMasterUser 
               ? 'Manage your real estate portfolio, finances, and users.' 
               : (isEditorUser 
@@ -345,10 +345,7 @@ export default function Dashboard() {
 
         {/* Viewer Properties Section */}
         {isViewerUser && (
-          <section 
-            className="viewer-properties-section"
-            data-testid="dashboard-viewer-properties"
-          >
+          <section data-testid="dashboard-viewer-properties">
             <ViewerPropertiesCard />
           </section>
         )}

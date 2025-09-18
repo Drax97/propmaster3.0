@@ -33,16 +33,16 @@ export default function Header({
 
   return (
     <header 
-      className="header"
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       data-testid="desktop-navigation"
     >
-      <div className="header-container">
+      <div className="container flex h-14 items-center justify-between px-3 sm:px-4">
         {/* Logo and Title Area */}
-        <div className="header-logo-area">
+        <div className="flex items-center gap-2">
           {showBackButton && (
             <Link 
               href={backButtonLink} 
-              className="back-button"
+              className="mr-2"
               data-testid="back-button"
             >
               <Button variant="outline" size="sm">
@@ -52,67 +52,106 @@ export default function Header({
             </Link>
           )}
 
-          <div className="logo-container">
-            <Building2 className="logo-icon" />
-            <div className="logo-text">
-              <h1 className="app-title">PropMaster</h1>
-              <p className="app-subtitle">Real Estate Management</p>
+          <div className="flex items-center gap-2">
+            <Building2 className="h-6 w-6 text-primary" />
+            <div className="hidden sm:block">
+              <h1 className="text-lg font-semibold">PropMaster</h1>
+              <p className="text-xs text-muted-foreground">Real Estate Management</p>
             </div>
           </div>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="mobile-menu-toggle">
-          <button 
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
             onClick={toggleMobileMenu}
             data-testid="mobile-menu-toggle"
-            className="menu-toggle-button"
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
 
-        {/* User Actions Area */}
-        <div 
-          className={`header-actions ${mobileMenuOpen ? 'mobile-menu-open' : ''}`}
-          data-testid="mobile-menu-items"
-        >
-          {/* User Info */}
-          <div className="user-info">
-            <Avatar>
+        {/* Desktop User Actions */}
+        <div className="hidden md:flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-8 w-8">
               <AvatarImage src={session.user.image} alt="User avatar" />
               <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="user-details">
-              <p className="user-name">{session.user.name}</p>
+            <div className="hidden lg:block">
+              <p className="text-sm font-medium">{session.user.name}</p>
               {session.user.role && (
-                <p className="user-role">{session.user.role}</p>
+                <p className="text-xs text-muted-foreground">{session.user.role}</p>
               )}
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="action-buttons">
+          <div className="flex items-center gap-1">
             {isMasterUser && (
-              <Link href="/settings" className="settings-link">
-                <Button variant="outline" size={isMobile ? "sm" : "sm"}>
+              <Link href="/settings">
+                <Button variant="ghost" size="sm">
                   <Settings className="h-4 w-4" />
-                  {!isMobile && <span className="ml-2">Settings</span>}
+                  <span className="hidden lg:inline ml-2">Settings</span>
                 </Button>
               </Link>
             )}
             <Button 
-              variant="outline" 
-              size={isMobile ? "sm" : "sm"}
+              variant="ghost" 
+              size="sm"
               onClick={() => signOut()}
-              className="signout-button"
             >
               <LogOut className="h-4 w-4" />
-              {!isMobile && <span className="ml-2">Sign Out</span>}
+              <span className="hidden lg:inline ml-2">Sign Out</span>
             </Button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-background border-b shadow-lg md:hidden"
+               data-testid="mobile-menu-items">
+            <div className="p-4 space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={session.user.image} alt="User avatar" />
+                  <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-medium">{session.user.name}</p>
+                  {session.user.role && (
+                    <p className="text-sm text-muted-foreground">{session.user.role}</p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                {isMasterUser && (
+                  <Link href="/settings" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </Button>
+                  </Link>
+                )}
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    signOut();
+                  }}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
