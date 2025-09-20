@@ -91,7 +91,17 @@ export async function POST(request) {
       public: true,
       allowedMimeTypes: fileType === 'image' 
         ? ['image/jpeg', 'image/png', 'image/webp'] 
-        : ['application/pdf']
+        : [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/plain',
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+          ]
     })
 
     // Ignore error if bucket already exists
@@ -222,7 +232,19 @@ export async function DELETE(request) {
 function validateFile(file, fileType) {
   // Validate file type
   const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-  const documentTypes = ['application/pdf']
+  const documentTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain',
+    // Also allow images as documents
+    'image/jpeg',
+    'image/jpg', 
+    'image/png',
+    'image/webp'
+  ]
   
   const allowedTypes = fileType === 'image' ? imageTypes : documentTypes
   
@@ -231,16 +253,20 @@ function validateFile(file, fileType) {
       valid: false, 
       error: fileType === 'image' 
         ? 'Invalid image type. Only JPEG, PNG, and WebP images are allowed.' 
-        : 'Invalid document type. Only PDF files are allowed.'
+        : 'Invalid document type. Only PDF, Word, Excel, text files, and images are allowed.'
     }
   }
 
-  // Validate file size (10MB max)
-  const maxSize = 10 * 1024 * 1024 // 10MB
+  // Validate file size - different limits for images vs documents
+  const maxSize = fileType === 'image' 
+    ? 10 * 1024 * 1024  // 10MB for images
+    : 200 * 1024 * 1024 // 200MB for documents
+    
   if (file.size > maxSize) {
+    const maxSizeMB = fileType === 'image' ? 10 : 200
     return { 
       valid: false, 
-      error: `File too large. Maximum size is 10MB.`
+      error: `File too large. Maximum size is ${maxSizeMB}MB.`
     }
   }
 

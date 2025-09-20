@@ -13,6 +13,7 @@ import { getUserRole, canManageProperties, ROLES } from '@/lib/permissions'
 import PhotoUpload from '@/components/PhotoUpload'
 import MultiplePhotoUpload from '@/components/MultiplePhotoUpload'
 import DocumentUpload from '@/components/DocumentUpload'
+import MultipleDocumentUpload from '@/components/MultipleDocumentUpload'
 import Link from 'next/link'
 
 export default function EditPropertyPage({ params }) {
@@ -135,10 +136,10 @@ export default function EditPropertyPage({ params }) {
 
   if (status === 'loading' || fetchLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading property...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading property...</p>
         </div>
       </div>
     )
@@ -150,11 +151,11 @@ export default function EditPropertyPage({ params }) {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Property Not Found</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">Property Not Found</h3>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <Link href="/properties">
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -167,9 +168,9 @@ export default function EditPropertyPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -180,8 +181,8 @@ export default function EditPropertyPage({ params }) {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Edit Property</h1>
-                <p className="text-sm text-gray-600">Update property information</p>
+                <h1 className="text-xl font-semibold text-card-foreground">Edit Property</h1>
+                <p className="text-sm text-muted-foreground">Update property information</p>
               </div>
             </div>
           </div>
@@ -205,7 +206,7 @@ export default function EditPropertyPage({ params }) {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Property Name *
                   </label>
                   <Input
@@ -218,7 +219,7 @@ export default function EditPropertyPage({ params }) {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Status
                   </label>
                   <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
@@ -239,7 +240,7 @@ export default function EditPropertyPage({ params }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     <MapPin className="h-4 w-4 inline mr-1" />
                     Location
                   </label>
@@ -252,7 +253,7 @@ export default function EditPropertyPage({ params }) {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     <DollarSign className="h-4 w-4 inline mr-1" />
                     Price (₹)
                   </label>
@@ -266,7 +267,7 @@ export default function EditPropertyPage({ params }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   <FileText className="h-4 w-4 inline mr-1" />
                   Description
                 </label>
@@ -310,15 +311,16 @@ export default function EditPropertyPage({ params }) {
               />
 
               {/* Document Upload */}
-              <DocumentUpload
-                label="Property Document"
-                description="Upload a PDF document related to the property"
-                value={formData.documents?.[0]} // Assuming single document for now
-                onChange={(url) => handleInputChange('documents', [url])}
+              <MultipleDocumentUpload
+                label="Property Documents"
+                value={formData.documents || []}
+                onChange={(documents) => handleInputChange('documents', documents)}
+                maxDocuments={10}
+                maxSize={200}
               />
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Maps Link
                 </label>
                 <Input

@@ -13,6 +13,7 @@ import { getUserRole, canManageProperties, ROLES } from '@/lib/permissions'
 import PhotoUpload from '@/components/PhotoUpload'
 import MultiplePhotoUpload from '@/components/MultiplePhotoUpload'
 import DocumentUpload from '@/components/DocumentUpload'
+import MultipleDocumentUpload from '@/components/MultipleDocumentUpload'
 import Link from 'next/link'
 
 export default function NewPropertyPage() {
@@ -96,10 +97,10 @@ export default function NewPropertyPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading...</p>
         </div>
       </div>
     )
@@ -110,43 +111,47 @@ export default function NewPropertyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
-        <div className="container mx-auto px-6 py-4">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center space-x-3">
             <Link href="/properties">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="transition-all duration-150 hover:bg-accent hover:text-accent-foreground">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Properties
               </Button>
             </Link>
             <div className="flex items-center space-x-2">
-              <Building2 className="h-6 w-6 text-blue-600" />
-              <h1 className="text-xl font-bold text-gray-900">Add New Property</h1>
+              <div className="bg-primary/10 p-2 rounded-lg">
+                <Building2 className="h-6 w-6 text-primary" />
+              </div>
+              <h1 className="text-xl font-bold text-foreground">Add New Property</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* Basic Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Building2 className="h-5 w-5" />
+            <Card className="shadow-md hover:shadow-xl transition-all duration-150 rounded-xl border border-accent/20 bg-card/90">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center space-x-2 text-lg">
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Building2 className="h-5 w-5 text-primary" />
+                  </div>
                   <span>Basic Information</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-muted-foreground">
                   Enter the basic details of your property
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-foreground mb-2 block">
                       Property Name *
                     </label>
                     <Input
@@ -154,18 +159,19 @@ export default function NewPropertyPage() {
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       required
+                      className="transition-all duration-150 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-foreground mb-2 block">
                       Status
                     </label>
                     <Select 
                       value={formData.status} 
                       onValueChange={(value) => handleInputChange('status', value)}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="transition-all duration-150 focus:ring-2 focus:ring-primary/20">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -182,20 +188,21 @@ export default function NewPropertyPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
-                      <MapPin className="h-4 w-4 mr-1" />
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
+                      <MapPin className="h-4 w-4 mr-1 text-muted-foreground" />
                       Location
                     </label>
                     <Input
                       placeholder="e.g., Bandra West, Mumbai"
                       value={formData.location}
                       onChange={(e) => handleInputChange('location', e.target.value)}
+                      className="transition-all duration-150 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
-                      <DollarSign className="h-4 w-4 mr-1" />
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
+                      <DollarSign className="h-4 w-4 mr-1 text-muted-foreground" />
                       Price (₹)
                     </label>
                     <Input
@@ -203,13 +210,14 @@ export default function NewPropertyPage() {
                       placeholder="e.g., 5000000"
                       value={formData.price}
                       onChange={(e) => handleInputChange('price', e.target.value)}
+                      className="transition-all duration-150 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
-                    <FileText className="h-4 w-4 mr-1" />
+                  <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
+                    <FileText className="h-4 w-4 mr-1 text-muted-foreground" />
                     Description
                   </label>
                   <Textarea
@@ -217,19 +225,22 @@ export default function NewPropertyPage() {
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     rows={4}
+                    className="transition-all duration-150 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </CardContent>
             </Card>
 
             {/* Media & Documents */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <ImageIcon className="h-5 w-5" />
+            <Card className="shadow-md hover:shadow-xl transition-all duration-150 rounded-xl border border-accent/20 bg-card/90">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center space-x-2 text-lg">
+                  <div className="bg-green-500/10 p-2 rounded-lg">
+                    <ImageIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  </div>
                   <span>Media & Documents</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-muted-foreground">
                   Upload property photos and documents
                 </CardDescription>
               </CardHeader>
@@ -252,23 +263,25 @@ export default function NewPropertyPage() {
                 />
 
                 {/* Document Upload */}
-                <DocumentUpload
-                  label="Property Document"
-                  description="Upload a PDF document related to the property"
-                  value={formData.documents?.[0]} // Assuming single document for now
-                  onChange={(url) => handleInputChange('documents', [url])}
+                <MultipleDocumentUpload
+                  label="Property Documents"
+                  value={formData.documents || []}
+                  onChange={(documents) => handleInputChange('documents', documents)}
+                  maxDocuments={10}
+                  maxSize={200}
                 />
 
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-foreground mb-2 block">
                     Google Maps Link
                   </label>
                   <Input
                     placeholder="https://maps.google.com/..."
                     value={formData.maps_link}
                     onChange={(e) => handleInputChange('maps_link', e.target.value)}
+                    className="transition-all duration-150 focus:ring-2 focus:ring-primary/20"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Paste a Google Maps link for property location
                   </p>
                 </div>
@@ -276,10 +289,10 @@ export default function NewPropertyPage() {
             </Card>
 
             {/* Additional Notes */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Additional Notes</CardTitle>
-                <CardDescription>
+            <Card className="shadow-md hover:shadow-xl transition-all duration-150 rounded-xl border border-accent/20 bg-card/90">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg">Additional Notes</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Private notes for internal use (not visible to clients)
                 </CardDescription>
               </CardHeader>
@@ -289,18 +302,19 @@ export default function NewPropertyPage() {
                   value={formData.notes}
                   onChange={(e) => handleInputChange('notes', e.target.value)}
                   rows={3}
+                  className="transition-all duration-150 focus:ring-2 focus:ring-primary/20"
                 />
               </CardContent>
             </Card>
 
             {/* Submit Button */}
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-3">
               <Link href="/properties">
-                <Button variant="outline" type="button">
+                <Button variant="outline" type="button" className="w-full sm:w-auto transition-all duration-150 hover:bg-accent hover:text-accent-foreground">
                   Cancel
                 </Button>
               </Link>
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={loading} className="w-full sm:w-auto transition-all duration-150 hover:bg-primary/90">
                 {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

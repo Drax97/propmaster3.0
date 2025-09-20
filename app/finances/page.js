@@ -11,11 +11,12 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   TrendingUp, DollarSign, Calendar, ArrowLeft, Plus, 
-  Search, Filter, Receipt, AlertCircle, CheckCircle, Clock, Shield, Lock
+  Search, Filter, Receipt, AlertCircle, CheckCircle, Clock, Shield, Lock, Download
 } from 'lucide-react'
 import Link from 'next/link'
 import { canViewAllFinances, canManageOwnFinances, getUserRole } from '@/lib/permissions'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { FinanceExportModal } from '@/components/ui/finance-export-modal'
 
 export default function FinancesPage() {
   const router = useRouter()
@@ -30,6 +31,7 @@ export default function FinancesPage() {
   const [error, setError] = useState('')
   const [users, setUsers] = useState([])
   const [createdByFilter, setCreatedByFilter] = useState('')
+  const [showExportModal, setShowExportModal] = useState(false)
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -97,11 +99,11 @@ export default function FinancesPage() {
 
   const getStatusBadgeColor = (status) => {
     switch (status) {
-      case 'paid': return 'bg-green-100 text-green-800'
-      case 'pending': return 'bg-orange-100 text-orange-800'
-      case 'overdue': return 'bg-red-100 text-red-800'
-      case 'partial': return 'bg-blue-100 text-blue-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'paid': return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+      case 'pending': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200'
+      case 'overdue': return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+      case 'partial': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
     }
   }
 
@@ -134,13 +136,18 @@ export default function FinancesPage() {
     return indianTime.toLocaleString('en-IN', options)
   }
 
+  const handleExportSuccess = (exportInfo) => {
+    console.log('Export completed:', exportInfo)
+    // You could show a success toast here if you have a toast system
+  }
+
   // Check authentication and permissions
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading financial data...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading financial data...</p>
         </div>
       </div>
     )
@@ -148,12 +155,12 @@ export default function FinancesPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="text-center py-8">
-            <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Authentication Required</h3>
-            <p className="text-gray-600 mb-4">Please sign in to access financial records.</p>
+            <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">Authentication Required</h3>
+            <p className="text-muted-foreground mb-4">Please sign in to access financial records.</p>
             <Button onClick={() => router.push('/auth/signin')}>
               Sign In
             </Button>
@@ -168,12 +175,12 @@ export default function FinancesPage() {
 
   if (!canViewFinances) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="text-center py-8">
-            <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-600 mb-4">You do not have permission to view financial records.</p>
+            <Lock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">Access Denied</h3>
+            <p className="text-muted-foreground mb-4">You do not have permission to view financial records.</p>
             <Button onClick={() => router.push('/dashboard')} variant="outline">
               Back to Dashboard
             </Button>
@@ -184,9 +191,9 @@ export default function FinancesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-card border-b border-border">
         <div className={`container mx-auto ${isMobile ? 'px-4 py-3' : 'px-6 py-4'}`}>
           <div className={`${isMobile ? 'flex flex-col space-y-3' : 'flex items-center justify-between'}`}>
             <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex items-center space-x-3'}`}>
@@ -198,22 +205,35 @@ export default function FinancesPage() {
               </Link>
               <div className={`${isMobile ? 'flex items-center justify-center space-x-2' : 'flex items-center space-x-2'}`}>
                 <TrendingUp className={`${isMobile ? 'h-5 w-5' : 'h-6 w-6'} text-green-600`} />
-                <h1 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-gray-900`}>Finance Management</h1>
+                <h1 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Finance Management</h1>
               </div>
             </div>
             
             <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex items-center space-x-3'}`}>
-              <div className={`${isMobile ? 'text-center text-xs' : 'text-sm'} text-gray-600`}>
+              <div className={`${isMobile ? 'text-center text-xs' : 'text-sm'} text-muted-foreground`}>
                 {finances.length} Records {userRole === 'editor' ? '(Your Records)' : ''}
               </div>
-              {canManageOwnFinances(userRole) && (
-                <Link href="/finances/new">
-                  <Button size={isMobile ? "sm" : "default"} className={isMobile ? 'w-full' : ''}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Payment Record
+              <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex items-center space-x-2'}`}>
+                {finances.length > 0 && (
+                  <Button 
+                    variant="outline" 
+                    size={isMobile ? "sm" : "default"} 
+                    className={isMobile ? 'w-full' : ''}
+                    onClick={() => setShowExportModal(true)}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Export Records
                   </Button>
-                </Link>
-              )}
+                )}
+                {canManageOwnFinances(userRole) && (
+                  <Link href="/finances/new">
+                    <Button size={isMobile ? "sm" : "default"} className={isMobile ? 'w-full' : ''}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Payment Record
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -222,7 +242,7 @@ export default function FinancesPage() {
       <main className={`container mx-auto ${isMobile ? 'px-4 py-4' : 'px-6 py-8'}`}>
         {/* Role-based access information */}
         {userRole === 'editor' && (
-          <Alert className="mb-6 border-blue-200 bg-blue-50">
+          <Alert className="mb-6 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20">
             <Shield className="h-4 w-4" />
             <AlertDescription>
               <strong>Editor Access:</strong> You can view and create your own financial records. Records cannot be edited after creation. Contact an administrator for changes.
@@ -231,7 +251,7 @@ export default function FinancesPage() {
         )}
         
         {error && (
-          <Alert className="mb-6 border-red-200 bg-red-50">
+          <Alert className="mb-6 border-destructive/20 bg-destructive/10">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               {error}
@@ -244,7 +264,7 @@ export default function FinancesPage() {
             <CardContent className={isMobile ? 'p-3' : 'p-6'}>
               <div className={`${isMobile ? 'flex flex-col items-center text-center space-y-1' : 'flex items-center justify-between'}`}>
                 <div className={isMobile ? 'order-2' : ''}>
-                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>Total Owed</p>
+                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-muted-foreground`}>Total Owed</p>
                   <p className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-blue-600`}>
                     {isMobile ? formatCurrency(summary.totalReceivables || 0).replace('₹', '₹') : formatCurrency(summary.totalReceivables || 0)}
                   </p>
@@ -258,7 +278,7 @@ export default function FinancesPage() {
             <CardContent className={isMobile ? 'p-3' : 'p-6'}>
               <div className={`${isMobile ? 'flex flex-col items-center text-center space-y-1' : 'flex items-center justify-between'}`}>
                 <div className={isMobile ? 'order-2' : ''}>
-                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>Total Paid</p>
+                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-muted-foreground`}>Total Paid</p>
                   <p className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-green-600`}>
                     {isMobile ? formatCurrency(summary.totalReceived || 0).replace('₹', '₹') : formatCurrency(summary.totalReceived || 0)}
                   </p>
@@ -272,7 +292,7 @@ export default function FinancesPage() {
             <CardContent className={isMobile ? 'p-3' : 'p-6'}>
               <div className={`${isMobile ? 'flex flex-col items-center text-center space-y-1' : 'flex items-center justify-between'}`}>
                 <div className={isMobile ? 'order-2' : ''}>
-                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>Unpaid Expenses</p>
+                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-muted-foreground`}>Unpaid Expenses</p>
                   <p className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-orange-600`}>
                     {isMobile ? formatCurrency(summary.pendingAmount || 0).replace('₹', '₹') : formatCurrency(summary.pendingAmount || 0)}
                   </p>
@@ -286,7 +306,7 @@ export default function FinancesPage() {
             <CardContent className={isMobile ? 'p-3' : 'p-6'}>
               <div className={`${isMobile ? 'flex flex-col items-center text-center space-y-1' : 'flex items-center justify-between'}`}>
                 <div className={isMobile ? 'order-2' : ''}>
-                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-gray-600`}>Overdue Expenses</p>
+                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-muted-foreground`}>Overdue Expenses</p>
                   <p className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-red-600`}>
                     {isMobile ? formatCurrency(summary.overdueAmount || 0).replace('₹', '₹') : formatCurrency(summary.overdueAmount || 0)}
                   </p>
@@ -308,7 +328,7 @@ export default function FinancesPage() {
           <CardContent className={isMobile ? 'pt-0' : ''}>
             <div className={`${isMobile ? 'flex flex-col space-y-3' : 'grid grid-cols-1 md:grid-cols-4 gap-4'}`}>
               <div className="relative">
-                <Search className={`absolute left-3 ${isMobile ? 'top-2.5' : 'top-3'} h-4 w-4 text-gray-400`} />
+                <Search className={`absolute left-3 ${isMobile ? 'top-2.5' : 'top-3'} h-4 w-4 text-muted-foreground`} />
                 <Input 
                   type="text"
                   placeholder="Search by employee name..."
@@ -386,9 +406,9 @@ export default function FinancesPage() {
         {finances.length === 0 ? (
           <Card>
             <CardContent className={`text-center ${isMobile ? 'py-8' : 'py-12'}`}>
-              <TrendingUp className={`${isMobile ? 'h-8 w-8' : 'h-12 w-12'} text-gray-400 mx-auto mb-4`} />
-              <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-gray-900 mb-2`}>No Financial Records Found</h3>
-              <p className={`text-gray-600 mb-4 ${isMobile ? 'text-sm' : ''}`}>
+              <TrendingUp className={`${isMobile ? 'h-8 w-8' : 'h-12 w-12'} text-muted-foreground mx-auto mb-4`} />
+              <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-foreground mb-2`}>No Financial Records Found</h3>
+              <p className={`text-muted-foreground mb-4 ${isMobile ? 'text-sm' : ''}`}>
                 {searchTerm || statusFilter || dateFilter
                   ? 'Try adjusting your search filters'
                   : 'Get started by adding your first payment record'}
@@ -413,7 +433,7 @@ export default function FinancesPage() {
                       <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex items-center space-x-3 mb-2'}`}>
                         <div className={`${isMobile ? 'flex items-center space-x-2' : 'flex items-center space-x-3'}`}>
                           {getStatusIcon(finance.status)}
-                          <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-gray-900`}>
+                          <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-foreground`}>
                             {finance.client_name}
                           </h3>
                         </div>
@@ -422,10 +442,10 @@ export default function FinancesPage() {
                         </Badge>
                       </div>
                       
-                      <div className={`${isMobile ? 'grid grid-cols-1 gap-2 text-sm' : 'grid grid-cols-2 md:grid-cols-4 gap-4 text-sm'} text-gray-600`}>
+                      <div className={`${isMobile ? 'grid grid-cols-1 gap-2 text-sm' : 'grid grid-cols-2 md:grid-cols-4 gap-4 text-sm'} text-muted-foreground`}>
                         <div>
                           <span className="font-medium">Amount:</span>
-                          <div className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-gray-900`}>
+                          <div className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-foreground`}>
                             {formatCurrency(finance.amount)}
                           </div>
                         </div>
@@ -447,7 +467,7 @@ export default function FinancesPage() {
                       </div>
                       
                       {finance.next_payment_date && (
-                        <div className={`${isMobile ? 'mt-2 text-xs' : 'mt-3 text-sm'} text-gray-600`}>
+                        <div className={`${isMobile ? 'mt-2 text-xs' : 'mt-3 text-sm'} text-muted-foreground`}>
                           <span className="font-medium">Next Payment:</span> {formatDate(finance.next_payment_date)}
                         </div>
                       )}
@@ -468,7 +488,7 @@ export default function FinancesPage() {
                       </Link>
                       
                       {userRole === 'editor' && (
-                        <div className={`${isMobile ? 'text-xs text-gray-500 flex items-center' : 'text-xs text-gray-500 mt-1 flex items-center'}`}>
+                        <div className={`${isMobile ? 'text-xs text-muted-foreground/70 flex items-center' : 'text-xs text-muted-foreground/70 mt-1 flex items-center'}`}>
                           <Lock className="h-3 w-3 mr-1" />
                           {isMobile ? '' : 'Locked'}
                         </div>
@@ -481,6 +501,14 @@ export default function FinancesPage() {
           </div>
         )}
       </main>
+
+      {/* Export Modal */}
+      <FinanceExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        records={finances}
+        onExport={handleExportSuccess}
+      />
     </div>
   )
 }

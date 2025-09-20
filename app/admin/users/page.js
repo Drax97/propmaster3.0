@@ -17,7 +17,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { 
   Building2, ArrowLeft, UserCheck, UserX, Settings, Trash2, 
-  Mail, Calendar, Eye, Edit, Shield, Users as UsersIcon, RefreshCw
+  Mail, Calendar, Eye, Edit, Shield, Users as UsersIcon, RefreshCw, ArrowUpDown
 } from 'lucide-react'
 import { USER_ROLES, USER_STATUS, PERMISSIONS as OLD_PERMISSIONS, DEFAULT_ROLE_PERMISSIONS } from '@/lib/supabase'
 import { canManageUsers, ROLES, ROLE_DISPLAY_NAMES, getUserRole, PERMISSIONS } from '@/lib/permissions'
@@ -33,6 +33,7 @@ export default function UserManagement() {
   const [showPermissions, setShowPermissions] = useState(false)
   const [error, setError] = useState(null)
   const [dataSource, setDataSource] = useState('unknown')
+  const [sortBy, setSortBy] = useState('name') // 'name', 'role', 'status', 'created'
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -146,29 +147,58 @@ export default function UserManagement() {
 
   const getRoleBadgeColor = (role) => {
     switch (role) {
-      case ROLES.MASTER: return 'bg-purple-100 text-purple-800'
-      case ROLES.EDITOR: return 'bg-blue-100 text-blue-800'
-      case ROLES.VIEWER: return 'bg-green-100 text-green-800'
-      case 'pending': return 'bg-orange-100 text-orange-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case ROLES.MASTER: return 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200'
+      case ROLES.EDITOR: return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
+      case ROLES.VIEWER: return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+      case 'pending': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200'
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
     }
   }
 
   const getStatusBadgeColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'pending': return 'bg-orange-100 text-orange-800'
-      case 'suspended': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'active': return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+      case 'pending': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200'
+      case 'suspended': return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
     }
+  }
+
+  // Define role hierarchy for sorting (higher number = higher permission level)
+  const getRoleWeight = (role) => {
+    switch (role) {
+      case ROLES.MASTER: return 3
+      case ROLES.EDITOR: return 2
+      case ROLES.VIEWER: return 1
+      case 'pending': return 0
+      default: return 0
+    }
+  }
+
+  // Sort users based on selected criteria
+  const sortUsers = (usersList) => {
+    return [...usersList].sort((a, b) => {
+      switch (sortBy) {
+        case 'role':
+          // Sort by permission level (highest to lowest)
+          return getRoleWeight(b.role) - getRoleWeight(a.role)
+        case 'status':
+          return a.status?.localeCompare(b.status) || 0
+        case 'created':
+          return new Date(b.created_at) - new Date(a.created_at)
+        case 'name':
+        default:
+          return a.name?.localeCompare(b.name) || 0
+      }
+    })
   }
 
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading users...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading users...</p>
         </div>
       </div>
     )
@@ -179,8 +209,8 @@ export default function UserManagement() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-          <p className="text-gray-600 mb-4">Only master users can access user management.</p>
+          <h3 className="text-lg font-medium text-foreground mb-2">Access Denied</h3>
+          <p className="text-muted-foreground mb-4">Only master users can access user management.</p>
           <Link href="/dashboard">
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -192,13 +222,14 @@ export default function UserManagement() {
     )
   }
 
-  const pendingUsers = users.filter(user => user.status === 'pending' || user.role === 'pending')
-  const activeUsers = users.filter(user => user.status === 'active')
+  const sortedUsers = sortUsers(users)
+  const pendingUsers = sortedUsers.filter(user => user.status === 'pending' || user.role === 'pending')
+  const activeUsers = sortedUsers.filter(user => user.status === 'active')
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-card border-b border-border">
         <div className="container mx-auto px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-3">
@@ -211,11 +242,25 @@ export default function UserManagement() {
               </Link>
               <div className="flex items-center space-x-1 sm:space-x-2">
                 <UsersIcon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
-                <h1 className="text-lg sm:text-xl font-bold text-gray-900">User Management</h1>
+                <h1 className="text-lg sm:text-xl font-bold text-foreground">User Management</h1>
               </div>
             </div>
             
             <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <ArrowUpDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500" />
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-24 sm:w-32 text-xs sm:text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="role">Permission Level</SelectItem>
+                  <SelectItem value="status">Status</SelectItem>
+                  <SelectItem value="created">Date Joined</SelectItem>
+                </SelectContent>
+              </Select>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
@@ -226,7 +271,7 @@ export default function UserManagement() {
                 <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline">Refresh</span>
               </Button>
-              <div className="text-xs sm:text-sm text-gray-600 hidden sm:block">
+              <div className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                 Total Users: {users.length} | Pending: {pendingUsers.length}
                 {dataSource && (
                   <span className={`ml-2 px-2 py-1 rounded text-xs ${
@@ -248,13 +293,13 @@ export default function UserManagement() {
       <main className="container mx-auto px-4 py-4 sm:px-6 sm:py-8">
         {/* Error Message */}
         {error && (
-          <Card className="mb-4 sm:mb-6 border-red-200 bg-red-50">
+          <Card className="mb-4 sm:mb-6 border-destructive/20 bg-destructive/10">
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center space-x-2">
                 <div className="h-3 w-3 sm:h-4 sm:w-4 bg-red-500 rounded-full"></div>
-                <p className="text-red-800 font-medium text-sm sm:text-base">Error loading users</p>
+                <p className="text-destructive font-medium text-sm sm:text-base">Error loading users</p>
               </div>
-              <p className="text-red-600 text-xs sm:text-sm mt-1">{error}</p>
+              <p className="text-destructive/80 text-xs sm:text-sm mt-1">{error}</p>
               <Button
                 variant="outline"
                 size="sm"
@@ -273,8 +318,8 @@ export default function UserManagement() {
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{users.length}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Users</p>
+                  <p className="text-lg sm:text-2xl font-bold text-foreground">{users.length}</p>
                 </div>
                 <UsersIcon className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600" />
               </div>
@@ -285,7 +330,7 @@ export default function UserManagement() {
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Pending Approval</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Pending Approval</p>
                   <p className="text-lg sm:text-2xl font-bold text-orange-600">{pendingUsers.length}</p>
                 </div>
                 <UserCheck className="h-4 w-4 sm:h-6 sm:w-6 text-orange-600" />
@@ -297,7 +342,7 @@ export default function UserManagement() {
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Active Users</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Active Users</p>
                   <p className="text-lg sm:text-2xl font-bold text-green-600">{activeUsers.length}</p>
                 </div>
                 <UserCheck className="h-4 w-4 sm:h-6 sm:w-6 text-green-600" />
@@ -309,7 +354,7 @@ export default function UserManagement() {
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">Masters</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Masters</p>
                   <p className="text-lg sm:text-2xl font-bold text-blue-600">
                     {users.filter(u => u.role === ROLES.MASTER).length}
                   </p>
@@ -324,7 +369,7 @@ export default function UserManagement() {
         {pendingUsers.length > 0 && (
           <Card className="mb-4 sm:mb-8">
             <CardHeader className="pb-3 sm:pb-6">
-              <CardTitle className="text-orange-600 text-sm sm:text-base">🔔 Pending Approval ({pendingUsers.length})</CardTitle>
+              <CardTitle className="text-orange-600 dark:text-orange-400 text-sm sm:text-base">🔔 Pending Approval ({pendingUsers.length})</CardTitle>
               <CardDescription className="text-xs sm:text-sm">
                 These users are waiting for your approval to access the system
               </CardDescription>
@@ -332,16 +377,16 @@ export default function UserManagement() {
             <CardContent>
               <div className="space-y-3 sm:space-y-4">
                 {pendingUsers.map((user) => (
-                  <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
                     <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-0">
                       <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                         <AvatarImage src={user.image} />
                         <AvatarFallback className="text-xs sm:text-sm">{user.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{user.name}</h3>
-                        <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                        <p className="text-xs text-gray-500">
+                        <h3 className="font-medium text-foreground text-sm sm:text-base truncate">{user.name}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">{user.email}</p>
+                        <p className="text-xs text-muted-foreground/70">
                           Signed up: {new Date(user.created_at).toLocaleDateString()}
                         </p>
                       </div>
@@ -386,24 +431,33 @@ export default function UserManagement() {
         {/* All Users Table */}
         <Card>
           <CardHeader className="pb-3 sm:pb-6">
-            <CardTitle className="text-sm sm:text-base">All Users ({users.length})</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              Manage roles and permissions for all users in the system
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-sm sm:text-base">All Users ({users.length})</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
+                  Manage roles and permissions for all users in the system
+                </CardDescription>
+              </div>
+              {sortBy !== 'name' && (
+                <Badge variant="outline" className="text-xs">
+                  Sorted by: {sortBy === 'role' ? 'Permission Level' : sortBy === 'status' ? 'Status' : 'Date Joined'}
+                </Badge>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {users.length === 0 ? (
               <div className="text-center py-6 sm:py-8">
                 <UsersIcon className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
-                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No Users Found</h3>
-                <p className="text-sm sm:text-base text-gray-600">
+                <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">No Users Found</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
                   {error ? 'Unable to load users. Please try refreshing.' : 'No users have signed up yet.'}
                 </p>
               </div>
             ) : (
               <div className="space-y-3 sm:space-y-4">
-                {users.map((user) => (
-                  <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg">
+                {sortedUsers.map((user) => (
+                  <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border border-border rounded-lg bg-card">
                     <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-0">
                       <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                         <AvatarImage src={user.image} />
@@ -411,12 +465,12 @@ export default function UserManagement() {
                       </Avatar>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{user.name}</h3>
+                          <h3 className="font-medium text-foreground text-sm sm:text-base truncate">{user.name}</h3>
                           {user.email === session.user.email && (
                             <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">You</Badge>
                           )}
                         </div>
-                        <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">{user.email}</p>
                         <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
                           <Badge className={`${getRoleBadgeColor(user.role)} text-xs`}>
                             {user.role?.toUpperCase()}
@@ -425,7 +479,7 @@ export default function UserManagement() {
                             {user.status?.toUpperCase()}
                           </Badge>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground/70 mt-1">
                           Last login: {user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}
                         </p>
                       </div>
@@ -477,7 +531,7 @@ export default function UserManagement() {
               <CardContent className="space-y-4 sm:space-y-6">
                 {/* Role Selection */}
                 <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-700">Role</label>
+                  <label className="text-xs sm:text-sm font-medium text-foreground">Role</label>
                   <Select
                     value={selectedUser.role}
                     onValueChange={(role) => {
@@ -501,7 +555,7 @@ export default function UserManagement() {
 
                 {/* Status Selection */}
                 <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-700">Status</label>
+                  <label className="text-xs sm:text-sm font-medium text-foreground">Status</label>
                   <Select
                     value={selectedUser.status}
                     onValueChange={(status) => {
@@ -521,11 +575,11 @@ export default function UserManagement() {
 
                 {/* Role-Based Permissions Info */}
                 <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3 block">
+                  <label className="text-xs sm:text-sm font-medium text-foreground mb-2 sm:mb-3 block">
                     Role Permissions
                   </label>
                   <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                    <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
                       This user will have the following permissions based on their role:
                     </p>
                     <div className="space-y-1 sm:space-y-2">
@@ -533,10 +587,10 @@ export default function UserManagement() {
                         PERMISSIONS[selectedUser.role].map((permission) => (
                           <div key={permission} className="flex items-center space-x-2">
                             <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 bg-green-500 rounded-full"></div>
-                            <span className="text-xs sm:text-sm text-gray-700">{permission.replace('_', ' ')}</span>
+                            <span className="text-xs sm:text-sm text-foreground">{permission.replace('_', ' ')}</span>
                           </div>
                         )) : (
-                          <p className="text-xs sm:text-sm text-gray-500">No permissions assigned</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">No permissions assigned</p>
                         )
                       }
                     </div>

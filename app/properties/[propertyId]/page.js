@@ -11,11 +11,14 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import LazyImage from '@/components/LazyImage'
+import { useToast } from '@/hooks/use-toast'
+import { shareProperty } from '@/lib/share'
 import LoadingSpinner from '@/components/LoadingSpinner'
 
 export default function PropertyDetailPage({ params }) {
   const { propertyId } = use(params)
   const router = useRouter()
+  const { toast } = useToast()
   const [property, setProperty] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -69,6 +72,12 @@ export default function PropertyDetailPage({ params }) {
       month: 'long',
       day: 'numeric'
     })
+  }
+
+  const handleShare = async () => {
+    if (property) {
+      await shareProperty(propertyId, property.title, toast)
+    }
   }
 
   // Helper function to safely parse images/documents
@@ -132,7 +141,7 @@ export default function PropertyDetailPage({ params }) {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" className="flex-1">
+              <Button variant="outline" size="sm" className="flex-1" onClick={handleShare}>
                 <Share className="h-4 w-4 mr-1" />
                 <span>Share</span>
               </Button>
@@ -161,7 +170,7 @@ export default function PropertyDetailPage({ params }) {
             </div>
             
             <div className="flex items-center space-x-3">
-              <Button variant="outline">
+              <Button variant="outline" onClick={handleShare}>
                 <Share className="h-4 w-4 mr-2" />
                 Share Property
               </Button>

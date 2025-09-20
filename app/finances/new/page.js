@@ -152,10 +152,10 @@ export default function NewFinanceRecordPage() {
 
   if (status === 'loading' || loadingProperties) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">
             {status === 'loading' ? 'Loading...' : 'Loading properties...'}
           </p>
         </div>
@@ -170,9 +170,9 @@ export default function NewFinanceRecordPage() {
   const userRole = getUserRole(session.user)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-card border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center space-x-3">
             <Link href="/finances">
@@ -183,7 +183,7 @@ export default function NewFinanceRecordPage() {
             </Link>
             <div className="flex items-center space-x-2">
               <DollarSign className="h-6 w-6 text-green-600" />
-              <h1 className="text-xl font-bold text-gray-900">Add New Payment Record</h1>
+              <h1 className="text-xl font-bold text-foreground">Add New Payment Record</h1>
             </div>
           </div>
         </div>
@@ -192,14 +192,14 @@ export default function NewFinanceRecordPage() {
       <main className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
           {error && (
-            <Alert className="mb-6 border-red-200 bg-red-50">
+            <Alert className="mb-6 border-destructive/20 bg-destructive/10">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           {userRole === 'editor' && (
-            <Alert className="mb-6 border-blue-200 bg-blue-50">
+            <Alert className="mb-6 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 <strong>Note:</strong> As an editor, you can create financial records but cannot edit them after creation. 
@@ -223,7 +223,7 @@ export default function NewFinanceRecordPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
                       <Building2 className="h-4 w-4 mr-1" />
                       Property *
                     </label>
@@ -260,7 +260,7 @@ export default function NewFinanceRecordPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
                       <DollarSign className="h-4 w-4 mr-1" />
                       Amount (₹) *
                     </label>
@@ -275,7 +275,7 @@ export default function NewFinanceRecordPage() {
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-foreground mb-2 block">
                       Payment Type *
                     </label>
                     <Select 
@@ -298,7 +298,7 @@ export default function NewFinanceRecordPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
                       Due Date
                     </label>
@@ -310,7 +310,7 @@ export default function NewFinanceRecordPage() {
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
+                    <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
                       Next Payment Date
                     </label>
@@ -319,14 +319,14 @@ export default function NewFinanceRecordPage() {
                       value={formData.next_payment_date}
                       onChange={(e) => handleInputChange('next_payment_date', e.target.value)}
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       For recurring payments (e.g., monthly rent)
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-foreground mb-2 block">
                     Payment Status
                   </label>
                   <Select 
@@ -360,7 +360,7 @@ export default function NewFinanceRecordPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
+                  <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
                     <Receipt className="h-4 w-4 mr-1" />
                     Receipt URL
                   </label>
@@ -370,15 +370,15 @@ export default function NewFinanceRecordPage() {
                     value={formData.receipt_url}
                     onChange={(e) => handleInputChange('receipt_url', e.target.value)}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Enter a direct URL to a receipt or payment proof document
                   </p>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block flex items-center">
+                  <label className="text-sm font-medium text-foreground mb-2 block flex items-center">
                     <FileText className="h-4 w-4 mr-1" />
-                    Notes <span className="text-xs text-gray-500">(Optional)</span>
+                    Notes <span className="text-xs text-muted-foreground">(Optional)</span>
                   </label>
                   <Textarea
                     placeholder="Additional notes about this payment..."

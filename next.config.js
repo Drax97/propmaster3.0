@@ -3,10 +3,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    // serverExternalPackages has been replaced with serverComponentsExternalPackages
-    serverComponentsExternalPackages: ['mongodb'],
-  },
+  // Use the new serverExternalPackages instead of the deprecated option
+  serverExternalPackages: ['mongodb'],
   webpack(config, { dev, isServer }) {
     if (dev) {
       // Reduce CPU/memory from file watching

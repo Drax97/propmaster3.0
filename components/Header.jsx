@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Header({ 
@@ -76,24 +77,29 @@ export default function Header({
         </div>
 
         {/* Desktop User Actions */}
-        <div className="hidden md:flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
+        <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background transition-all duration-150 hover:ring-primary/40">
               <AvatarImage src={session.user.image} alt="User avatar" />
-              <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                {session.user.name?.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div className="hidden lg:block">
-              <p className="text-sm font-medium">{session.user.name}</p>
+              <p className="text-sm font-semibold text-foreground">{session.user.name}</p>
               {session.user.role && (
-                <p className="text-xs text-muted-foreground">{session.user.role}</p>
+                <p className="text-xs text-muted-foreground capitalize bg-muted/50 px-2 py-0.5 rounded-full">
+                  {session.user.role}
+                </p>
               )}
             </div>
           </div>
 
           <div className="flex items-center gap-1">
+            <ThemeToggle />
             {isMasterUser && (
               <Link href="/settings">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="transition-all duration-150 hover:bg-accent hover:text-accent-foreground">
                   <Settings className="h-4 w-4" />
                   <span className="hidden lg:inline ml-2">Settings</span>
                 </Button>
@@ -102,6 +108,7 @@ export default function Header({
             <Button 
               variant="ghost" 
               size="sm"
+              className="transition-all duration-150 hover:bg-destructive/10 hover:text-destructive"
               onClick={() => signOut()}
             >
               <LogOut className="h-4 w-4" />
@@ -115,23 +122,31 @@ export default function Header({
           <div className="absolute top-full left-0 right-0 bg-background border-b shadow-lg md:hidden"
                data-testid="mobile-menu-items">
             <div className="p-4 space-y-4">
-              <div className="flex items-center gap-3 pb-3 border-b">
-                <Avatar className="h-10 w-10">
+              <div className="flex items-center gap-3 pb-3 border-b border-muted">
+                <Avatar className="h-12 w-12 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
                   <AvatarImage src={session.user.image} alt="User avatar" />
-                  <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
+                    {session.user.name?.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium">{session.user.name}</p>
+                  <p className="font-semibold text-foreground">{session.user.name}</p>
                   {session.user.role && (
-                    <p className="text-sm text-muted-foreground">{session.user.role}</p>
+                    <p className="text-sm text-muted-foreground capitalize bg-muted/50 px-2 py-0.5 rounded-full inline-block mt-1">
+                      {session.user.role}
+                    </p>
                   )}
                 </div>
               </div>
               
               <div className="space-y-2">
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-sm font-medium text-foreground">Theme</span>
+                  <ThemeToggle />
+                </div>
                 {isMasterUser && (
                   <Link href="/settings" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start transition-all duration-150 hover:bg-accent hover:text-accent-foreground">
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
                     </Button>
@@ -139,7 +154,7 @@ export default function Header({
                 )}
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start"
+                  className="w-full justify-start transition-all duration-150 hover:bg-destructive/10 hover:text-destructive"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     signOut();

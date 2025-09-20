@@ -11,7 +11,7 @@ export default function DocumentUpload({
   onChange, 
   label = "Upload Document",
   description = "Click to upload PDF document",
-  maxSize = 10 // MB
+  maxSize = 200 // MB
 }) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
@@ -21,9 +21,20 @@ export default function DocumentUpload({
     if (!file) return
 
     // Validate file type
-    const allowedTypes = ['application/pdf']
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'text/plain',
+      'image/jpeg',
+      'image/jpg', 
+      'image/png',
+      'image/webp'
+    ]
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Invalid document type. Only PDF files are allowed.')
+      toast.error('Invalid document type. Only PDF, Word, Excel, text files, and images are allowed.')
       return
     }
 
@@ -180,7 +191,7 @@ export default function DocumentUpload({
                   <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                   <p className="text-sm text-gray-600 mb-1">{description}</p>
                   <p className="text-xs text-gray-500">
-                    PDF up to {maxSize}MB
+                    PDF, Word, Excel, Text files, and Images up to {maxSize}MB
                   </p>
                 </div>
               )}
@@ -192,7 +203,7 @@ export default function DocumentUpload({
       <input
         ref={fileInputRef}
         type="file"
-        accept="application/pdf"
+        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,image/jpeg,image/jpg,image/png,image/webp"
         onChange={handleFileInputChange}
         className="hidden"
       />

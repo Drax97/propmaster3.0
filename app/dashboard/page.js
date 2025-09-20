@@ -20,7 +20,10 @@ import {
   Plus, 
   Eye, 
   DollarSign, 
-  UserCog 
+  UserCog,
+  CheckCircle,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 
 import {
@@ -32,11 +35,11 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 // Lazy load non-critical components
 const StatsCards = dynamic(() => import('@/components/StatsCards'), {
   loading: () => (
-    <div className="stats-grid">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {[...Array(4)].map((_, i) => (
         <div 
           key={i} 
-          className="stats-card-loading"
+          className="h-24 bg-muted animate-pulse rounded-lg"
           data-testid="stats-card-loading"
         />
       ))}
@@ -47,11 +50,11 @@ const StatsCards = dynamic(() => import('@/components/StatsCards'), {
 
 const QuickActions = dynamic(() => import('@/components/QuickActions'), {
   loading: () => (
-    <div className="quick-actions-grid">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(3)].map((_, i) => (
         <div 
           key={i} 
-          className="quick-actions-card-loading"
+          className="h-48 bg-muted animate-pulse rounded-lg"
           data-testid="quick-actions-card-loading"
         />
       ))}
@@ -153,194 +156,136 @@ export default function Dashboard() {
         isMasterUser={isMasterUser} 
       />
 
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-4xl">
-        <section className="space-y-2">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 max-w-7xl">
+        {/* Welcome Section */}
+        <section className="space-y-3">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-accent bg-clip-text">
             Welcome back, {session.user.name}!
           </h1>
-          <p className="text-muted-foreground md:text-lg">
+          <p className="text-muted-foreground text-base md:text-lg max-w-3xl leading-relaxed">
             {isMasterUser 
-              ? 'Manage your real estate portfolio, finances, and users.' 
+              ? 'Manage your entire property portfolio & track finances, easily.' 
               : (isEditorUser 
-                ? 'Manage properties and finances in the system.'
-                : 'Browse and view available properties in the system.')}
+                ? 'Manage properties and finances in the system with full editing access.'
+                : 'Browse and view available properties with comprehensive details and insights.')}
           </p>
         </section>
 
+        {/* Stats Cards - Always show for Master and Editor users */}
         {(isMasterUser || isEditorUser) && (
-          <>
-            <section 
-              className="stats-section"
-              data-testid="dashboard-stats"
-            >
-              <Suspense fallback={
-                <div className="stats-grid">
-                  {[...Array(4)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="stats-card-loading"
-                      data-testid="stats-card-loading"
-                    />
-                  ))}
-                </div>
-              }>
-                <StatsCards stats={stats} />
-              </Suspense>
-            </section>
-
-            {isMasterUser && (
-              <section 
-                className="quick-actions-section"
-                data-testid="dashboard-quick-actions"
-              >
-                <Suspense fallback={
-                  <div className="quick-actions-grid">
-                    {[...Array(3)].map((_, i) => (
-                      <div 
-                        key={i} 
-                        className="quick-actions-card-loading"
-                        data-testid="quick-actions-card-loading"
-                      />
-                    ))}
-                  </div>
-                }>
-                  <QuickActions userRole={userRole} stats={stats} />
-                </Suspense>
-              </section>
-            )}
-
-            <section 
-              className="system-overview-section"
-              data-testid="dashboard-system-overview"
-            >
-              <div className="system-overview-grid">
-                {isMasterUser ? (
-                  <>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>System Overview</CardTitle>
-                        <CardDescription>
-                          Current status of your PropMaster system
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="system-status-list">
-                          <div className="system-status-item">
-                            <span>Database Status</span>
-                            <Badge variant="outline" className="status-badge connected">
-                              Connected
-                            </Badge>
-                          </div>
-                          <div className="system-status-item">
-                            <span>User Authentication</span>
-                            <Badge variant="outline" className="status-badge connected">
-                              Active
-                            </Badge>
-                          </div>
-                          <div className="system-status-item">
-                            <span>Property System</span>
-                            <Badge variant="outline" className="status-badge connected">
-                              Operational
-                            </Badge>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Getting Started</CardTitle>
-                        <CardDescription>
-                          New to PropMaster? Here's what you can do
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="getting-started-actions">
-                          <Link href="/properties/new">
-                            <Button variant="outline" className="action-button">
-                              <Plus className="action-button-icon" />
-                              Add Your First Property
-                            </Button>
-                          </Link>
-                          <Link href="/admin/users">
-                            <Button variant="outline" className="action-button">
-                              <Users className="action-button-icon" />
-                              Manage User Access
-                            </Button>
-                          </Link>
-                          <Link href="/settings">
-                            <Button variant="outline" className="action-button">
-                              <Settings className="action-button-icon" />
-                              Configure Settings
-                            </Button>
-                          </Link>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </>
-                ) : (
-                  <>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Properties Overview</CardTitle>
-                        <CardDescription>
-                          Your property management dashboard
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-1 gap-4 mb-4">
-                          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">Total Properties</p>
-                              <p className="text-2xl font-bold text-blue-600">{stats.totalProperties}</p>
-                            </div>
-                            <Building2 className="h-8 w-8 text-blue-600" />
-                          </div>
-                          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">Available Properties</p>
-                              <p className="text-2xl font-bold text-green-600">{stats.availableProperties}</p>
-                            </div>
-                            <Eye className="h-8 w-8 text-green-600" />
-                          </div>
-                        </div>
-                        <Link href="/properties" className="view-all-link">
-                          <Button variant="outline" size="sm" className="w-full">
-                            View All Properties
-                          </Button>
-                        </Link>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Financial Overview</CardTitle>
-                        <CardDescription>
-                          Current financial status
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-1 gap-4 mb-4">
-                          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">Total Receivables</p>
-                              <p className="text-2xl font-bold text-purple-600">₹{stats.totalReceivables.toLocaleString()}</p>
-                            </div>
-                            <DollarSign className="h-8 w-8 text-purple-600" />
-                          </div>
-                        </div>
-                        <Link href="/finances" className="view-all-link">
-                          <Button variant="outline" size="sm" className="w-full">
-                            View Financial Details
-                          </Button>
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  </>
-                )}
+          <section data-testid="dashboard-stats">
+            <Suspense fallback={
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {[...Array(4)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="h-24 bg-muted animate-pulse rounded-lg"
+                    data-testid="stats-card-loading"
+                  />
+                ))}
               </div>
-            </section>
-          </>
+            }>
+              <StatsCards stats={stats} />
+            </Suspense>
+          </section>
+        )}
+
+        {/* Feature Cards */}
+        {(isMasterUser || isEditorUser) && (
+          <section data-testid="dashboard-feature-cards">
+            <Suspense fallback={
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="h-48 bg-muted animate-pulse rounded-lg"
+                    data-testid="quick-actions-card-loading"
+                  />
+                ))}
+              </div>
+            }>
+              <QuickActions userRole={userRole} stats={stats} />
+            </Suspense>
+          </section>
+        )}
+
+        {/* System Overview and Getting Started - Only for Master users */}
+        {isMasterUser && (
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="shadow-md hover:shadow-xl transition-all duration-150 rounded-xl border border-accent/20 bg-card/90">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <div className="bg-blue-500/10 p-2 rounded-lg">
+                    <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  System Overview
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Current status of your PropMaster system
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-muted">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm font-medium text-foreground">Database Status</span>
+                  </div>
+                  <Badge variant="outline" className="rounded-full px-3 py-1 bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
+                    Connected
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-muted">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm font-medium text-foreground">User Authentication</span>
+                  </div>
+                  <Badge variant="outline" className="rounded-full px-3 py-1 bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
+                    Active
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-muted">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm font-medium text-foreground">Property System</span>
+                  </div>
+                  <Badge variant="outline" className="rounded-full px-3 py-1 bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
+                    Operational
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-md hover:shadow-xl transition-all duration-150 rounded-xl border border-accent/20 bg-card/90">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <div className="bg-orange-500/10 p-2 rounded-lg">
+                    <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  Getting Started
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  New to PropMaster? Here's what you can do
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Link href="/properties/new">
+                  <Button variant="outline" className="w-full justify-start transition-all duration-150 hover:bg-accent hover:text-accent-foreground">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Your First Property
+                  </Button>
+                </Link>
+                <Link href="/settings">
+                  <Button variant="outline" className="w-full justify-start transition-all duration-150 hover:bg-accent hover:text-accent-foreground">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configure Settings
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </section>
         )}
 
         {/* Viewer Properties Section */}
@@ -349,7 +294,6 @@ export default function Dashboard() {
             <ViewerPropertiesCard />
           </section>
         )}
-
       </main>
     </div>
   );

@@ -3,27 +3,25 @@ import { supabase, handleSupabaseError } from '@/lib/supabase'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { getUserRole, ROLES } from '@/lib/permissions'
+import { getOptimizedProperties, getUserByEmail } from '@/lib/optimized-queries'
 
 export async function GET(request) {
   try {
-    console.log('Properties API called - fetching properties')
+    console.log('Properties API called - fetching properties (optimized)')
 
     const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get current user's ID from 'users' table
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', session.user.email)
-      .single()
-
-    if (userError || !userData) {
+    // Get current user info using optimized query
+    const userResult = await getUserByEmail(session.user.email)
+    if (userResult.error || !userResult.data) {
       return NextResponse.json({ error: 'Could not find user' }, { status: 403 })
     }
-    const userId = userData.id;
+
+    const userId = userResult.data.id
+    const userRole = getUserRole(session.user)
 
     // Get query parameters for filtering
     const { searchParams } = new URL(request.url)
@@ -32,51 +30,30 @@ export async function GET(request) {
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const location = searchParams.get('location')
+    const includeArchived = searchParams.get('includeArchived') === 'true'
+    const limit = parseInt(searchParams.get('limit')) || 50
+    const offset = parseInt(searchParams.get('offset')) || 0
 
-    // Build Supabase query
-    let query = supabase
-      .from('properties')
-      .select(`
-        *,
-        users:created_by(name, email)
-      `)
-      .order('updated_at', { ascending: false })
+    // Build filters object
+    const filters = {}
+    if (search) filters.search = search
+    if (status) filters.status = status
+    if (minPrice) filters.minPrice = minPrice
+    if (maxPrice) filters.maxPrice = maxPrice
+    if (location) filters.location = location
+    if (includeArchived) filters.includeArchived = includeArchived
 
-    // Filter for private properties - only visible to creator
-    query = query.or(`status.neq.private,created_by.eq.${userId}`)
+    // Use optimized query with automatic fallback
+    const result = await getOptimizedProperties(filters, {
+      userId,
+      userRole,
+      limit,
+      offset,
+      useView: false // Disable views temporarily to avoid schema cache issues
+    })
 
-    // Role-based filtering for editors
-    const userRole = getUserRole(session.user)
-    if (userRole === ROLES.EDITOR) {
-      query = query.or(`created_by.eq.${userId},status.eq.available,status.eq.pending`)
-    }
-
-    // Apply filters
-    if (search) {
-      query = query.or(`name.ilike.%${search}%,location.ilike.%${search}%,description.ilike.%${search}%`)
-    }
-
-    if (status && status !== 'all') {
-      query = query.eq('status', status)
-    }
-
-    if (minPrice) {
-      query = query.gte('price', parseFloat(minPrice))
-    }
-
-    if (maxPrice) {
-      query = query.lte('price', parseFloat(maxPrice))
-    }
-
-    if (location) {
-      query = query.ilike('location', `%${location}%`)
-    }
-
-    // Execute query
-    const { data: properties, error } = await query
-
-    if (error) {
-      const errorInfo = handleSupabaseError(error, 'properties fetch')
+    if (result.error) {
+      const errorInfo = handleSupabaseError(result.error, 'properties fetch')
       console.error('Database error fetching properties:', errorInfo.message)
       
       return NextResponse.json({ 
@@ -87,12 +64,19 @@ export async function GET(request) {
       }, { status: 500 })
     }
 
-    console.log(`Successfully fetched ${properties.length} properties from database`)
+    console.log(`Successfully fetched ${result.data.length} properties from database (${result.optimized ? 'optimized' : 'standard'} query)`)
 
     return NextResponse.json({ 
-      properties: properties || [],
-      message: `Found ${properties?.length || 0} properties`,
-      source: 'database'
+      properties: result.data || [],
+      total: result.count,
+      message: `Found ${result.data?.length || 0} properties`,
+      source: result.source,
+      optimized: result.optimized,
+      pagination: {
+        limit,
+        offset,
+        hasMore: result.count > (offset + limit)
+      }
     })
 
   } catch (error) {
