@@ -123,30 +123,30 @@ export default function PropertyDetailPage({ params }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-slate-900 border-b border-slate-700">
         <div className="container mx-auto px-4 sm:px-6 py-4">
           {/* Mobile Header Layout */}
           <div className="flex flex-col space-y-3 sm:hidden">
             <div className="flex items-center justify-between">
               <Link href="/properties">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="border-slate-600 text-slate-200 hover:bg-slate-800">
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   <span className="hidden xs:inline">Back to Properties</span>
                   <span className="xs:hidden">Back</span>
                 </Button>
               </Link>
               <div className="flex items-center space-x-2">
-                <Building2 className="h-5 w-5 text-blue-600" />
-                <h1 className="text-lg font-bold text-gray-900">Property Details</h1>
+                <Building2 className="h-5 w-5 text-blue-400" />
+                <h1 className="text-lg font-bold text-white">Property Details</h1>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" className="flex-1" onClick={handleShare}>
+              <Button variant="outline" size="sm" className="flex-1 border-slate-600 text-slate-200 hover:bg-slate-800" onClick={handleShare}>
                 <Share className="h-4 w-4 mr-1" />
                 <span>Share</span>
               </Button>
               <Link href={`/properties/${propertyId}/edit`} className="flex-1">
-                <Button size="sm" className="w-full">
+                <Button variant="secondary" size="sm" className="w-full bg-slate-800 text-white hover:bg-slate-700 border-slate-700">
                   <Edit className="h-4 w-4 mr-1" />
                   <span>Edit</span>
                 </Button>
@@ -158,24 +158,24 @@ export default function PropertyDetailPage({ params }) {
           <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link href="/properties">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="border-slate-600 text-slate-200 hover:bg-slate-800">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Properties
                 </Button>
               </Link>
               <div className="flex items-center space-x-2">
-                <Building2 className="h-6 w-6 text-blue-600" />
-                <h1 className="text-xl font-bold text-gray-900">Property Details</h1>
+                <Building2 className="h-6 w-6 text-blue-400" />
+                <h1 className="text-xl font-bold text-white">Property Details</h1>
               </div>
             </div>
             
             <div className="flex items-center space-x-3">
-              <Button variant="outline" onClick={handleShare}>
+              <Button variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-800" onClick={handleShare}>
                 <Share className="h-4 w-4 mr-2" />
                 Share Property
               </Button>
               <Link href={`/properties/${propertyId}/edit`}>
-                <Button>
+                <Button variant="secondary" className="bg-slate-800 text-white hover:bg-slate-700 border-slate-700">
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Property
                 </Button>
