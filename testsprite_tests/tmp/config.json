@@ -1,0 +1,15 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "propmaster3.0-main",
+    "projectPath": "C:\\DRAX\\propmaster3.0-main",
+    "testIds": [],
+    "additionalInstruction": "Test auto correct repeat functionality across the entire application",
+    "envs": {
+      "API_KEY": "YOUR_API_KEY_HERE"
+    }
+  }
+}

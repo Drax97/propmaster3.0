@@ -1,0 +1,230 @@
+{
+  "product_name": "PropMaster 3.0",
+  "version": "3.0.0",
+  "description": "A comprehensive real estate management web application for property management, financial tracking, and secure client sharing",
+  "target_users": [
+    "Real estate professionals",
+    "Property managers",
+    "Real estate agencies",
+    "Property investors"
+  ],
+  "core_objectives": [
+    "Centralize property management operations",
+    "Track financial records and transactions",
+    "Enable secure client sharing of property information",
+    "Provide role-based access control",
+    "Offer comprehensive dashboard insights"
+  ],
+  "key_features": [
+    {
+      "feature_id": "AUTH_001",
+      "name": "Authentication System",
+      "description": "Google OAuth authentication with role-based access control (Master, Admin, Viewer, Client)",
+      "priority": "high",
+      "auto_correct_features": [
+        "Email validation and formatting",
+        "OAuth redirect URL correction",
+        "Session token validation"
+      ]
+    },
+    {
+      "feature_id": "PROP_001",
+      "name": "Property Management",
+      "description": "Complete CRUD operations for property data including photos, documents, pricing, and location mapping",
+      "priority": "high",
+      "auto_correct_features": [
+        "Property name standardization",
+        "Address formatting and validation",
+        "Price input formatting with currency",
+        "Property type categorization",
+        "Duplicate property detection"
+      ]
+    },
+    {
+      "feature_id": "FIN_001",
+      "name": "Financial Management",
+      "description": "Comprehensive finance tracking including payments, EMIs, receipts, and financial reporting",
+      "priority": "high",
+      "auto_correct_features": [
+        "Currency formatting and validation",
+        "Date format standardization",
+        "Amount calculation verification",
+        "Payment method validation",
+        "Receipt categorization"
+      ]
+    },
+    {
+      "feature_id": "USER_001",
+      "name": "User Management",
+      "description": "Master-controlled user access system with pending approval workflow",
+      "priority": "high",
+      "auto_correct_features": [
+        "Email domain validation",
+        "Role assignment validation",
+        "User permission verification",
+        "Access level correction"
+      ]
+    },
+    {
+      "feature_id": "UPLOAD_001",
+      "name": "File Upload System",
+      "description": "Photo and document upload with validation, compression, and storage management",
+      "priority": "medium",
+      "auto_correct_features": [
+        "File type validation and correction",
+        "File size optimization",
+        "Image format standardization",
+        "Upload progress validation"
+      ]
+    },
+    {
+      "feature_id": "DASH_001",
+      "name": "Dashboard Analytics",
+      "description": "Overview dashboard with statistics, insights, and quick actions",
+      "priority": "medium",
+      "auto_correct_features": [
+        "Data aggregation validation",
+        "Chart data formatting",
+        "Statistical calculation verification",
+        "Date range validation"
+      ]
+    },
+    {
+      "feature_id": "SEARCH_001",
+      "name": "Search and Filter",
+      "description": "Advanced search functionality with filters and auto-complete",
+      "priority": "medium",
+      "auto_correct_features": [
+        "Search query normalization",
+        "Fuzzy search matching",
+        "Filter parameter validation",
+        "Search result ranking"
+      ]
+    }
+  ],
+  "auto_correct_repeat_requirements": {
+    "description": "Comprehensive auto-correction and repeat functionality across all user interactions",
+    "requirements": [
+      {
+        "category": "Input Validation",
+        "description": "Automatic correction of common input errors",
+        "features": [
+          "Email format validation and suggestion",
+          "Phone number formatting",
+          "Address standardization",
+          "Currency and number formatting",
+          "Date format normalization"
+        ]
+      },
+      {
+        "category": "Repeat Operations",
+        "description": "Functionality to repeat and template common operations",
+        "features": [
+          "Property creation templates",
+          "Bulk financial record entry",
+          "Repeated action shortcuts",
+          "Operation history and replay",
+          "Batch processing capabilities"
+        ]
+      },
+      {
+        "category": "Smart Suggestions",
+        "description": "Intelligent suggestions based on user behavior and data patterns",
+        "features": [
+          "Auto-complete for property names",
+          "Suggested financial categories",
+          "Historical data suggestions",
+          "Smart form pre-filling",
+          "Pattern recognition for data entry"
+        ]
+      },
+      {
+        "category": "Error Prevention",
+        "description": "Proactive error prevention and correction",
+        "features": [
+          "Real-time validation feedback",
+          "Duplicate detection and prevention",
+          "Data consistency checks",
+          "Cross-field validation",
+          "Format standardization"
+        ]
+      }
+    ]
+  },
+  "user_roles": [
+    {
+      "role": "master",
+      "permissions": ["delete", "manage_users", "finance_all", "property_all"],
+      "description": "Full system access with user management capabilities"
+    },
+    {
+      "role": "admin",
+      "permissions": ["finance_own", "property_manage"],
+      "description": "Administrative access to properties and own financial records"
+    },
+    {
+      "role": "viewer",
+      "permissions": ["property_view_available"],
+      "description": "Read-only access to available properties"
+    },
+    {
+      "role": "client",
+      "permissions": ["property_view_shared"],
+      "description": "Access to specifically shared properties"
+    }
+  ],
+  "technical_requirements": {
+    "frontend": {
+      "framework": "Next.js 15.5.3",
+      "ui_library": "React 19.1.1",
+      "styling": "Tailwind CSS with shadcn/ui",
+      "validation": "Zod schema validation",
+      "forms": "react-hook-form"
+    },
+    "backend": {
+      "api": "Next.js API routes",
+      "database": "Supabase PostgreSQL",
+      "authentication": "NextAuth.js with Google OAuth",
+      "storage": "Supabase Storage"
+    },
+    "deployment": {
+      "platform": "Kubernetes",
+      "port": 3000,
+      "environment": "Production-ready container"
+    }
+  },
+  "success_criteria": [
+    "Users can authenticate seamlessly with Google OAuth",
+    "Property CRUD operations work without errors",
+    "Financial tracking accurately calculates and stores data",
+    "Auto-correction features prevent common input errors",
+    "Repeat functionality saves user time on common tasks",
+    "File uploads are validated and processed correctly",
+    "Role-based access control functions properly",
+    "Application is responsive across all devices",
+    "Database operations are reliable and fast",
+    "User interface is intuitive and accessible"
+  ],
+  "test_scenarios": [
+    {
+      "scenario": "Complete user authentication flow",
+      "steps": ["Access application", "Click sign in", "Complete OAuth", "Verify session", "Test logout"]
+    },
+    {
+      "scenario": "Property management workflow",
+      "steps": ["Create property", "Upload photos", "Edit details", "Search properties", "Delete property"]
+    },
+    {
+      "scenario": "Financial record management",
+      "steps": ["Add financial record", "Upload receipt", "Edit amounts", "Generate reports", "Validate calculations"]
+    },
+    {
+      "scenario": "Auto-correct functionality",
+      "steps": ["Enter malformed data", "Verify auto-correction", "Test suggestions", "Validate formatting", "Check error prevention"]
+    },
+    {
+      "scenario": "Repeat operations",
+      "steps": ["Create template", "Use repeat function", "Batch operations", "Verify consistency", "Test efficiency gains"]
+    }
+  ]
+}

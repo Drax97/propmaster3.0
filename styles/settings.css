@@ -1,0 +1,179 @@
+/* Settings Page Mobile-First Styles */
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.settings-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.settings-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+}
+
+.settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.settings-section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+}
+
+.settings-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.section-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-primary);
+}
+
+.settings-section-content {
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+}
+
+.settings-section-content.section-open {
+  display: flex;
+}
+
+.settings-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.settings-form-group label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.settings-switch-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+}
+
+.settings-switch-group label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--spacing-sm);
+}
+
+.button-icon {
+  margin-right: var(--spacing-sm);
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Desktop Enhancements */
+@media (min-width: 768px) {
+  .settings-main {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+  }
+
+  .settings-sections {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .settings-section-content {
+    display: flex;
+  }
+
+  .settings-section-header {
+    cursor: default;
+    border-bottom: none;
+  }
+
+  .settings-form-group {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .settings-form-group label {
+    flex: 1;
+  }
+
+  .settings-form-group Input,
+  .settings-form-group Select {
+    flex: 2;
+  }
+}
+
+/* Accessibility and Interaction */
+.settings-page a, 
+.settings-page button {
+  transition: all 0.2s ease;
+}
+
+.settings-page a:hover, 
+.settings-page button:hover {
+  opacity: 0.9;
+}
+
+.settings-page a:focus, 
+.settings-page button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Theme-specific Styles */
+.theme-light {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.theme-dark {
+  background-color: var(--color-text-primary);
+  color: var(--color-background);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.section-open {
+  animation: fadeIn 0.3s ease-in-out;
+}

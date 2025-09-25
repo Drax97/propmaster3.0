@@ -1,0 +1,170 @@
+{
+  "project_name": "PropMaster 3.0",
+  "description": "Real Estate Management Web Application for property management, financial tracking, and secure client sharing",
+  "tech_stack": {
+    "frontend": {
+      "framework": "Next.js 15.5.3",
+      "ui_library": "React 19.1.1",
+      "styling": "Tailwind CSS with shadcn/ui components",
+      "state_management": "React hooks and context",
+      "form_handling": "react-hook-form with zod validation"
+    },
+    "backend": {
+      "framework": "Next.js API routes",
+      "database": "Supabase (PostgreSQL)",
+      "authentication": "NextAuth.js with Google OAuth",
+      "file_storage": "Supabase Storage"
+    },
+    "deployment": {
+      "platform": "Kubernetes container environment",
+      "port": 3000,
+      "hostname": "0.0.0.0"
+    }
+  },
+  "key_features": [
+    {
+      "name": "Authentication System",
+      "description": "Google OAuth authentication with role-based access control",
+      "files": ["app/api/auth/[...nextauth]/route.js", "app/auth/signin/page.js"],
+      "auto_correct_features": ["Email validation", "OAuth redirect handling"]
+    },
+    {
+      "name": "Property Management",
+      "description": "CRUD operations for property data with photo uploads and document management",
+      "files": ["app/properties/page.js", "app/properties/[propertyId]/page.js", "app/api/properties/route.js"],
+      "auto_correct_features": ["Property name validation", "Address formatting", "Price input formatting"]
+    },
+    {
+      "name": "Financial Management",
+      "description": "Financial record tracking with payments, EMIs, and receipt management",
+      "files": ["app/finances/page.js", "app/finances/[financeId]/page.js", "app/api/finances/route.js"],
+      "auto_correct_features": ["Currency formatting", "Date validation", "Amount calculations"]
+    },
+    {
+      "name": "User Management",
+      "description": "Master-controlled user access with pending approval system",
+      "files": ["app/admin/users/page.js", "app/admin/users-simple/page.js"],
+      "auto_correct_features": ["Email validation", "Role assignment validation"]
+    },
+    {
+      "name": "File Upload System",
+      "description": "Photo and document upload functionality with validation",
+      "files": ["components/PhotoUpload.jsx", "components/MultiplePhotoUpload.jsx", "components/DocumentUpload.jsx"],
+      "auto_correct_features": ["File type validation", "File size validation", "Image optimization"]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Overview dashboard with statistics and quick actions",
+      "files": ["app/dashboard/page.js", "components/StatsCards.jsx", "components/QuickActions.jsx"],
+      "auto_correct_features": ["Data aggregation", "Chart data validation"]
+    }
+  ],
+  "auto_correct_repeat_functionality": {
+    "description": "Auto-correction and repeat functionality implemented across forms and user inputs",
+    "features": [
+      {
+        "name": "Form Input Auto-Correction",
+        "description": "Automatic correction of common input errors in forms",
+        "locations": ["Property forms", "Finance forms", "User management forms"],
+        "types": ["Email validation", "Phone number formatting", "Address standardization", "Currency formatting"]
+      },
+      {
+        "name": "Repeat Actions",
+        "description": "Functionality to repeat common actions and operations",
+        "locations": ["Property creation", "Financial record entry", "Bulk operations"],
+        "types": ["Template-based creation", "Duplicate with modifications", "Batch processing"]
+      },
+      {
+        "name": "Search Auto-Complete",
+        "description": "Auto-completion and suggestion features in search fields",
+        "locations": ["Property search", "User search", "Financial record search"],
+        "types": ["Fuzzy matching", "Historical suggestions", "Smart filtering"]
+      },
+      {
+        "name": "Data Validation and Correction",
+        "description": "Automatic validation and correction of data entries",
+        "locations": ["All forms", "API endpoints", "Database operations"],
+        "types": ["Format validation", "Range checking", "Cross-field validation"]
+      }
+    ]
+  },
+  "database_schema": {
+    "tables": [
+      "users (id, email, name, role, created_at)",
+      "properties (id, name, location, price, description, created_by, images, documents)",
+      "finances (id, property_id, type, amount, date, description, receipt_url)",
+      "sessions (authentication sessions)"
+    ],
+    "relationships": [
+      "users -> properties (one-to-many)",
+      "properties -> finances (one-to-many)"
+    ]
+  },
+  "api_endpoints": [
+    {
+      "path": "/api/auth/[...nextauth]",
+      "method": "GET/POST",
+      "description": "NextAuth.js authentication endpoints"
+    },
+    {
+      "path": "/api/properties",
+      "method": "GET/POST",
+      "description": "Property CRUD operations"
+    },
+    {
+      "path": "/api/finances",
+      "method": "GET/POST",
+      "description": "Financial record operations"
+    },
+    {
+      "path": "/api/admin/users",
+      "method": "GET/POST",
+      "description": "User management operations"
+    },
+    {
+      "path": "/api/upload",
+      "method": "POST",
+      "description": "File upload handling"
+    }
+  ],
+  "ui_components": [
+    "Header navigation",
+    "Property cards and forms",
+    "Financial record forms",
+    "Photo upload components",
+    "Data tables with sorting/filtering",
+    "Dashboard statistics",
+    "User management interface"
+  ],
+  "known_issues": [
+    "Supabase schema cache issue (PGRST205) requiring workarounds",
+    "Some database interactions use mock data as fallback"
+  ],
+  "test_priorities": [
+    {
+      "category": "Authentication",
+      "priority": "high",
+      "focus": "OAuth flow, session management, role-based access"
+    },
+    {
+      "category": "Auto-Correct Repeat",
+      "priority": "high",
+      "focus": "Input validation, auto-correction, repeat functionality"
+    },
+    {
+      "category": "Property Management",
+      "priority": "high",
+      "focus": "CRUD operations, file uploads, search functionality"
+    },
+    {
+      "category": "Financial Management",
+      "priority": "high",
+      "focus": "Financial calculations, data validation, reporting"
+    },
+    {
+      "category": "User Interface",
+      "priority": "medium",
+      "focus": "Responsive design, component interactions, accessibility"
+    }
+  ]
+}

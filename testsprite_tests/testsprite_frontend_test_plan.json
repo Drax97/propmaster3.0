@@ -1,0 +1,161 @@
+{
+  "testPlan": {
+    "projectName": "PropMaster 3.0",
+    "testType": "frontend",
+    "framework": "Next.js",
+    "testScope": "codebase",
+    "localEndpoint": "http://localhost:3000",
+    "tests": [
+      {
+        "id": "auth_001",
+        "name": "Authentication Flow Test",
+        "description": "Test user authentication including sign in, sign out, and session management",
+        "priority": "high",
+        "category": "authentication",
+        "steps": [
+          "Navigate to sign-in page",
+          "Test OAuth authentication flow",
+          "Verify successful authentication",
+          "Test session persistence",
+          "Test sign-out functionality"
+        ]
+      },
+      {
+        "id": "nav_001",
+        "name": "Navigation and Routing Test",
+        "description": "Test navigation between different pages and route protection",
+        "priority": "high",
+        "category": "navigation",
+        "steps": [
+          "Test navigation to dashboard",
+          "Test navigation to properties page",
+          "Test navigation to finances page",
+          "Test navigation to settings page",
+          "Verify protected routes redirect properly"
+        ]
+      },
+      {
+        "id": "prop_001",
+        "name": "Property Management Test",
+        "description": "Test property creation, editing, and management functionality",
+        "priority": "high",
+        "category": "properties",
+        "steps": [
+          "Navigate to properties page",
+          "Test creating new property",
+          "Test editing existing property",
+          "Test property deletion",
+          "Test property search and filtering"
+        ]
+      },
+      {
+        "id": "fin_001",
+        "name": "Financial Management Test",
+        "description": "Test financial records creation and management",
+        "priority": "high",
+        "category": "finances",
+        "steps": [
+          "Navigate to finances page",
+          "Test creating new financial record",
+          "Test editing financial record",
+          "Test financial reports generation",
+          "Test financial data validation"
+        ]
+      },
+      {
+        "id": "upload_001",
+        "name": "File Upload Test",
+        "description": "Test document and photo upload functionality",
+        "priority": "medium",
+        "category": "uploads",
+        "steps": [
+          "Test single photo upload",
+          "Test multiple photo upload",
+          "Test document upload",
+          "Test file validation",
+          "Test upload progress and error handling"
+        ]
+      },
+      {
+        "id": "ui_001",
+        "name": "UI Components Test",
+        "description": "Test UI components and interactions",
+        "priority": "medium",
+        "category": "ui",
+        "steps": [
+          "Test form components",
+          "Test dialog components",
+          "Test table components",
+          "Test responsive design",
+          "Test accessibility features"
+        ]
+      },
+      {
+        "id": "autocorrect_001",
+        "name": "Auto-Correct Repeat Functionality Test",
+        "description": "Test auto-correct and repeat functionality across the application",
+        "priority": "high",
+        "category": "autocorrect",
+        "steps": [
+          "Test text input auto-correction in property forms",
+          "Test repeat functionality for property creation",
+          "Test auto-correction in financial forms",
+          "Test repeat actions for bulk operations",
+          "Test auto-correction in search fields",
+          "Verify auto-correct suggestions work properly",
+          "Test repeat functionality persistence across sessions"
+        ]
+      },
+      {
+        "id": "admin_001",
+        "name": "Admin Panel Test",
+        "description": "Test admin functionality and user management",
+        "priority": "medium",
+        "category": "admin",
+        "steps": [
+          "Test admin user access",
+          "Test user management functionality",
+          "Test admin dashboard features",
+          "Test admin settings configuration"
+        ]
+      },
+      {
+        "id": "perf_001",
+        "name": "Performance Test",
+        "description": "Test application performance and loading times",
+        "priority": "medium",
+        "category": "performance",
+        "steps": [
+          "Test page load times",
+          "Test image loading performance",
+          "Test data fetching performance",
+          "Test responsive behavior under load"
+        ]
+      },
+      {
+        "id": "error_001",
+        "name": "Error Handling Test",
+        "description": "Test error handling and edge cases",
+        "priority": "medium",
+        "category": "error_handling",
+        "steps": [
+          "Test network error handling",
+          "Test form validation errors",
+          "Test authentication errors",
+          "Test file upload errors",
+          "Test database connection errors"
+        ]
+      }
+    ]
+  },
+  "configuration": {
+    "browser": "chromium",
+    "headless": false,
+    "timeout": 30000,
+    "retries": 2,
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    }
+  }
+}
