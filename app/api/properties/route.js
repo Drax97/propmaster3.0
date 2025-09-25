@@ -3,7 +3,7 @@ import { supabase, handleSupabaseError } from '@/lib/supabase'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { getUserRole, ROLES } from '@/lib/permissions'
-import { getOptimizedProperties, getUserByEmail } from '@/lib/optimized-queries'
+import { getOptimizedProperties, getUserByEmail } from '@/lib/database/optimized-queries'
 
 export async function GET(request) {
   try {

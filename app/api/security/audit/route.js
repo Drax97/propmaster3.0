@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { securitySystem } from '@/lib/security-system'
+import { securitySystem } from '@/lib/security/security-system'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 

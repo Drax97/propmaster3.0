@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 
-import Header from '@/components/Header'
+import Header from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
@@ -22,7 +22,7 @@ import {
   Sun 
 } from 'lucide-react'
 
-import LoadingSpinner from '@/components/LoadingSpinner'
+import LoadingSpinner from '@/components/layout/LoadingSpinner'
 
 const LANGUAGE_OPTIONS = [
   { value: 'en', label: 'English' },

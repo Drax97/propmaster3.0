@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { propertySharingSystem } from '@/lib/property-sharing'
-import { withPublicSecurity } from '@/lib/security-middleware'
+import { withPublicSecurity } from '@/lib/security/security-middleware'
 
 /**
  * Public Property Sharing API

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { propertySharingSystem } from '@/lib/property-sharing'
-import { withAuthenticatedSecurity } from '@/lib/security-middleware'
+import { withAuthenticatedSecurity } from '@/lib/security/security-middleware'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { canManageProperties } from '@/lib/permissions'

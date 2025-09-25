@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import { USER_ROLES, USER_STATUS, PERMISSIONS as OLD_PERMISSIONS, DEFAULT_ROLE_PERMISSIONS } from '@/lib/supabase'
 import { canManageUsers, ROLES, ROLE_DISPLAY_NAMES, getUserRole, PERMISSIONS } from '@/lib/permissions'
-import RoleSelect from '@/components/RoleSelect'
+import RoleSelect from '@/components/forms/RoleSelect'
 import Link from 'next/link'
 
 export default function UserManagement() {

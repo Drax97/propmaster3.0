@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 
-import Header from '@/components/Header'
+import Header from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -16,7 +16,7 @@ import {
   Archive
 } from 'lucide-react'
 
-import LoadingSpinner from '@/components/LoadingSpinner'
+import LoadingSpinner from '@/components/layout/LoadingSpinner'
 import LazyImage from '@/components/LazyImage'
 import { getUserRole, canManageProperties, canAccessArchive, ROLES } from '@/lib/permissions'
 import { useToast } from '@/hooks/use-toast'

@@ -11,7 +11,7 @@ import {
   ChevronRight 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/layout/LoadingSpinner';
 
 const FeatureCard = ({ icon: Icon, title, description }) => (
   <div 

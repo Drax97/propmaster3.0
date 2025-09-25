@@ -6,8 +6,8 @@ import { useEffect, useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import Header from '@/components/Header';
-import ViewerPropertiesCard from '@/components/ViewerPropertiesCard';
+import Header from '@/components/layout/Header';
+import ViewerPropertiesCard from '@/components/layout/ViewerPropertiesCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,10 +30,10 @@ import {
   fetchDashboardStatistics,
 } from '@/lib/supabase';
 import { getUserRole, ROLES } from '@/lib/permissions';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/layout/LoadingSpinner';
 
 // Lazy load non-critical components
-const StatsCards = dynamic(() => import('@/components/StatsCards'), {
+const StatsCards = dynamic(() => import('@/components/layout/StatsCards'), {
   loading: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {[...Array(4)].map((_, i) => (
@@ -48,7 +48,7 @@ const StatsCards = dynamic(() => import('@/components/StatsCards'), {
   ssr: false
 });
 
-const QuickActions = dynamic(() => import('@/components/QuickActions'), {
+const QuickActions = dynamic(() => import('@/components/layout/QuickActions'), {
   loading: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(3)].map((_, i) => (

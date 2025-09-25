@@ -10,10 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Building2, Save, MapPin, DollarSign, FileText, Image as ImageIcon } from 'lucide-react'
 import { getUserRole, canManageProperties, ROLES } from '@/lib/permissions'
-import PhotoUpload from '@/components/PhotoUpload'
-import MultiplePhotoUpload from '@/components/MultiplePhotoUpload'
-import DocumentUpload from '@/components/DocumentUpload'
-import MultipleDocumentUpload from '@/components/MultipleDocumentUpload'
+import PhotoUpload from '@/components/upload/PhotoUpload'
+import MultiplePhotoUpload from '@/components/upload/MultiplePhotoUpload'
+import DocumentUpload from '@/components/upload/DocumentUpload'
+import MultipleDocumentUpload from '@/components/upload/MultipleDocumentUpload'
 import Link from 'next/link'
 
 export default function NewPropertyPage() {

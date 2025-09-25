@@ -13,7 +13,7 @@ import Link from 'next/link'
 import LazyImage from '@/components/LazyImage'
 import { useToast } from '@/hooks/use-toast'
 import { shareProperty } from '@/lib/share'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import LoadingSpinner from '@/components/layout/LoadingSpinner'
 
 export default function PropertyDetailPage({ params }) {
   const { propertyId } = use(params)

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { canManageUsers, getUserRole } from '@/lib/permissions'
-import { getUsers } from '@/lib/database-utils'
+import { getUsers } from '@/lib/database/database-utils'
 
 // Make this endpoint dynamic to connect to real database
 export const dynamic = 'force-dynamic'

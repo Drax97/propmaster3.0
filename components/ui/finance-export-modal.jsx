@@ -51,13 +51,13 @@ import {
   sortFinanceRecords, 
   exportFinanceRecords,
   getFilterOptions
-} from "@/lib/export"
+} from "@/lib/export/export"
 import {
   getExportPresets,
   saveExportPreset,
   deleteExportPreset,
   validatePreset
-} from "@/lib/export-presets"
+} from "@/lib/export/export-presets"
 
 export function FinanceExportModal({ 
   isOpen, 

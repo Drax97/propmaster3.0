@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getUserRole, canAccessArchive } from '@/lib/permissions'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
-import { getUserByEmail } from '@/lib/optimized-queries'
+import { getUserByEmail } from '@/lib/database/optimized-queries'
 
 export async function POST(request) {
   try {
