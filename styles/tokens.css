@@ -43,4 +43,9 @@
   --z-sticky: 20;
   --z-modal: 50;
   --z-tooltip: 100;
+
+  /* Transitions */
+  --duration-normal: 0.3s;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }

@@ -4,6 +4,8 @@
 @import '../styles/dashboard.css';
 @import '../styles/properties.css';
 @import '../styles/settings.css';
+@import '../styles/install-page.css';
+@import '../styles/pwa-install-button.css';
 
 @tailwind base;
 @tailwind components;
