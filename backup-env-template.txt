@@ -1,0 +1,31 @@
+# PropMaster 3.0 - Backup System Environment Configuration Template
+# Copy these variables to your .env.local file
+
+# =============================================================================
+# REQUIRED: Supabase Configuration (should already be configured)
+# =============================================================================
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# =============================================================================
+# OPTIONAL: Google Drive Backup Integration
+# =============================================================================
+GOOGLE_CLOUD_PROJECT_ID=your-project-id
+GOOGLE_CLOUD_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY_CONTENT_HERE\n-----END PRIVATE KEY-----\n"
+GOOGLE_CLOUD_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
+GOOGLE_CLOUD_CLIENT_ID=your_client_id
+GOOGLE_DRIVE_BACKUP_FOLDER_ID=your_backup_folder_id
+
+# =============================================================================
+# SETUP INSTRUCTIONS
+# =============================================================================
+# 1. Copy these variables to your .env.local file
+# 2. Fill in your Supabase credentials (required)
+# 3. For Google Drive integration:
+#    - Go to https://console.cloud.google.com
+#    - Create a Service Account with Drive access
+#    - Download the service account key JSON
+#    - Extract values for the environment variables above
+# 4. Run: npm run backup:setup
+# 5. Test: npm run backup:test

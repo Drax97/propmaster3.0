@@ -1,0 +1,12 @@
+# Backup files - do not commit to version control
+*.json.gz
+*.backup
+temp/
+*.tmp
+
+# Keep metadata for reference
+!metadata/
+metadata/*.json
+
+# Keep directory structure
+!.gitignore
